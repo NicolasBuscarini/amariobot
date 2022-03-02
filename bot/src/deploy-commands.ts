@@ -6,10 +6,17 @@ import { AppConfig } from './configs/environment';
 
 const commands = [
 	new SlashCommandBuilder().setName('cudecachorro').setDescription('Replies with teu cu em privado!'),
-	new SlashCommandBuilder().setName('saveuser').setDescription('Salva um user').addStringOption(option => option.setName('username').setDescription('Enter an username')),
-	new SlashCommandBuilder().setName('getuser').setDescription('Obtem um user pelo username').addStringOption(option => option.setName('username').setDescription('Enter an username')),
+	new SlashCommandBuilder().setName('getuser').setDescription('Obtém um user pelo username')
+		.addUserOption(option => option.setName('usuario').setDescription('pega um usuario')
+		.setRequired(false)),
 	new SlashCommandBuilder().setName('loja').setDescription('Use seus ArmarioCredits'),
-	new SlashCommandBuilder().setName('creditos').setDescription('Obtém informações sobre seus créditos'),
+	//new SlashCommandBuilder().setName('creditos').setDescription('Obtém informações sobre seus créditos'),
+	new SlashCommandBuilder().setName('addcreditos').setDescription('Obtém informações sobre seus créditos')	.addUserOption(option => option.setName('usuario')
+		.setDescription('pega um usuario')
+		.setRequired(true))
+		.addIntegerOption(option => option.setMaxValue(100000).setMinValue(1).setName('valor')
+		.setDescription('adiciona ou remove creditos')
+		.setRequired(true)),
 ]
 	.map(command => command.toJSON());
 

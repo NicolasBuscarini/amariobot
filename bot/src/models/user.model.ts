@@ -5,7 +5,7 @@ import { BaseEntity } from "./base.model";
 export class User extends BaseEntity {
 
   @Property()
-  username: string;
+  userid: string;
 
   @Property({ nullable: false })
   credits: number;
@@ -19,9 +19,9 @@ export class User extends BaseEntity {
   // @ManyToOne(() => Book, { nullable: true })
   // favouriteBook?: Book;
 
-  constructor(username: string, credits: number = 0) {
+  constructor(userid: string, credits: number = 0) {
     super();
-    this.username = username;
+    this.userid = userid;
 		this.credits = credits;
   }
 

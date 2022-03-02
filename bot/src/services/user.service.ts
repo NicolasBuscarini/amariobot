@@ -15,14 +15,31 @@ class UserService {
 		return this._userRepository;
 	}
 
-	async signUp(user: User): Promise<void> {
+	async signUp(user: User): Promise<User> {
 		const userRepository = await this.userRepository();
 		userRepository.persistAndFlush(user); // Criar instância
+		return user
 	}
 
-	async getUserByUsername(username: string): Promise<User | null> {
+	async getUserByUserId(userid: string): Promise<User | null> {
 		const userRepository = await this.userRepository();
-		return await userRepository.findOne({ username: username});
+		try {
+			return await userRepository.findOneOrFail({ userid: userid});
+		} catch (e) {return null}
+	}
+
+	async getOrCreateUserByUserId(userid: string): Promise<User> {
+		let user =  await this.getUserByUserId(userid);
+		if (user) return user;
+		await this.signUp(new User(userid));
+		user = await this.getUserByUserId(userid);
+		return user!
+	}
+
+	async mudarCreditos(user: User, qtd: number) {
+		const userRepository = await this.userRepository();
+		user.credits += qtd;
+		await userRepository.persistAndFlush(user);
 	}
 
 }
