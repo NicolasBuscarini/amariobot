@@ -1,0 +1,10 @@
+export const AppConfig = {
+	TOKEN: "OTQ4MjIzNTg3MjY4MDQ2ODQ5.Yh4sCA.C2Mrd72RNv5pkbDThy62VUFkoJ4",
+	CLIENT_ID: "948223587268046849",
+	GUILD_ID: "705513409814331462",
+
+	MONGO_DB_HOST: "mongodb://localhost",
+	MONGO_DB_NAME: "armario",
+	MONGO_DB_USERNAME: "root",
+	MONGO_DB_PASSWORD: "root"
+}
