@@ -7,6 +7,7 @@ import { userService } from './services/user.service';
 const client: Client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 
 const adminCommands = ["cudecachorro", "addcreditos"]
+const commandSources = [discordCreditosCommands, discordCommands];
 
 client.on('ready', () => {
   console.log(`Logged in as ${client?.user?.tag}!`);
@@ -23,22 +24,20 @@ client.on('interactionCreate', async (interaction) => {
   }
 	const user = await userService.getOrCreateUserByUserId(interaction.user.id);
 
-  discordCommands.forEach(async (action: (...i: any[]) => Promise<void>, commandName: String) => {
-    if (commandName === interaction.commandName) {
-      try{
-        return await action(user, interaction);
-      } catch (e) { return console.error(e)}
-    }
-  })
-
-  discordCreditosCommands.forEach(async (action: (...i: any[]) => Promise<void>, commandName: String) => {
-    if (commandName === interaction.commandName) {
-      try{
-        return await action(user, interaction);
-      } catch (e) { return console.error(e)}
-    }
-      
-  })  
+  for (let commandSource of commandSources) {
+    commandSource.forEach(async (action: (...i: any[]) => Promise<void>, commandName: String) => {
+      if (commandName === interaction.commandName) {
+        try{
+          await action(user, interaction);
+          return;
+        } catch (e) { 
+          console.error(e)
+          await interaction.reply({content: "Algo deu errado ao executar esse comando", ephemeral: true})
+          return;
+        }
+      }
+    });
+  }
 
 });
 
