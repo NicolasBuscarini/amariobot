@@ -5,10 +5,11 @@ import { Routes } from 'discord-api-types/v9';
 import { AppConfig } from './configs/environment';
 
 const commands = [
-	new SlashCommandBuilder().setName('hilorena').setDescription('Replies with teu cu!'),
 	new SlashCommandBuilder().setName('cudecachorro').setDescription('Replies with teu cu em privado!'),
 	new SlashCommandBuilder().setName('saveuser').setDescription('Salva um user').addStringOption(option => option.setName('username').setDescription('Enter an username')),
 	new SlashCommandBuilder().setName('getuser').setDescription('Obtem um user pelo username').addStringOption(option => option.setName('username').setDescription('Enter an username')),
+	new SlashCommandBuilder().setName('loja').setDescription('Use seus ArmarioCredits'),
+	new SlashCommandBuilder().setName('creditos').setDescription('Obtém informações sobre seus créditos'),
 ]
 	.map(command => command.toJSON());
 

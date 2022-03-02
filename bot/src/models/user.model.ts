@@ -10,6 +10,9 @@ export class User extends BaseEntity {
   @Property({ nullable: false })
   credits: number;
 
+  @Property({ nullable: false })
+  daily: boolean = false;
+
   // @OneToMany(() => Book, b => b.author, { cascade: [Cascade.ALL] })
   // books = new Collection<Book>(this);
 
