@@ -13,13 +13,13 @@ discordCreditosCommands.set("loja", async (currentUser: User,  interaction: Comm
 	.setDescription('Loja onde você poderá gastar seus créditos sociais\n\n')
 	.setThumbnail('https://i.imgur.com/xCH7NyD.png')
 	.addFields(
-		{ name: 'Mutar alguem no servidor \n    AR$50,00', value: '/mutar @usuario' },
-		{ name: 'Desmutar alguem ou você mesmo \n    AR$50,00', value: '/desmutar @usuario'},
-		{ name: 'Alterar apelido de alguém ou de você mesmo \n    A$200,00', value: '/apelido @usuario "Apelido"' },
-		{ name: 'Kickar do chat de voz \n    AR$10,00', value: '/kickchat @usuario' },
-		{ name: 'Silenciar em algum canal de texto \n    AR$300,00', value: '/silenciar @usuario "canaldetexto"'},
-		{ name: 'Silenciar em todos canais de texto \n    AR$1000,00', value: '/silenciarTudo @usuario'},
-		{ name: 'Desilenciar alguém ou você mesmo \n    AR$600,00', value: '/desilenciar @usuario'},
+		{ name: '\nMutar alguem no servidor \n\t\tAR$50,00', value: '/mutar @usuario' },
+		{ name: 'Desmutar alguem ou você mesmo \n\t\tAR$50,00', value: '/desmutar @usuario'},
+		{ name: 'Alterar apelido de alguém ou de você mesmo \n\t\tA$200,00', value: '/apelido @usuario "Apelido"' },
+		{ name: 'Kickar do chat de voz \n\t\tAR$10,00', value: '/kickchat @usuario' },
+		{ name: 'Silenciar em algum canal de texto \n\t\tAR$300,00', value: '/silenciar @usuario "canaldetexto"'},
+		{ name: 'Silenciar em todos canais de texto \n\t\tAR$1000,00', value: '/silenciarTudo @usuario'},
+		{ name: 'Desilenciar alguém ou você mesmo \n\t\tAR$600,00', value: '/desilenciar @usuario'}
 	)
 	.setImage('https://i.imgur.com/UKK6OCb.png')
 	.setTimestamp()

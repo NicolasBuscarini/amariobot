@@ -1,5 +1,4 @@
-
-import { SlashCommandBuilder } from '@discordjs/builders';
+import { SlashCommandBuilder} from '@discordjs/builders';
 import { REST } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v9';
 import { AppConfig } from './configs/environment';
@@ -10,7 +9,7 @@ const commands = [
 		.addUserOption(option => option.setName('usuario').setDescription('pega um usuario')
 		.setRequired(false)),
 	new SlashCommandBuilder().setName('loja').setDescription('Use seus ArmarioCredits'),
-	//new SlashCommandBuilder().setName('creditos').setDescription('Obtém informações sobre seus créditos'),
+	new SlashCommandBuilder().setName('perfil').setDescription('Visualizar perfil'),
 	new SlashCommandBuilder().setName('addcreditos').setDescription('Obtém informações sobre seus créditos')	.addUserOption(option => option.setName('usuario')
 		.setDescription('pega um usuario')
 		.setRequired(true))
