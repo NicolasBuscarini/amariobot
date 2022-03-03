@@ -1,9 +1,9 @@
-import { CacheType, CommandInteraction, Interaction } from "discord.js";
+import { CacheType, CommandInteraction } from "discord.js";
 import { User } from "../models/user.model";
 import { userService } from "../services/user.service";
 const { MessageEmbed } = require('discord.js');
 
-const discordCreditosCommands = new Map<String, any>();
+const discordCreditosCommands = new Map<string, any>();
 
 discordCreditosCommands.set("loja", async (currentUser: User,  interaction: CommandInteraction<CacheType>)=> {
 	const exampleEmbed = new MessageEmbed()
@@ -32,7 +32,7 @@ discordCreditosCommands.set("addcreditos", async (currentUser: User,  interactio
 	let input = interaction.options.getUser('usuario')!; 
 	const user = await userService.getOrCreateUserByUserId(input.id);
 
-	const valor = interaction.options.getInteger('valor')!;
+	const valor = interaction.options.getNumber('valor')!;
 	await userService.mudarCreditos(user, valor);
 	console.log(user);
 	await interaction.reply(`Adicionado AR\$${valor} para <@!${user.userid}> .`);

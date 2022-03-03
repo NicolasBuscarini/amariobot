@@ -2,13 +2,14 @@ import { CacheType, Client, CommandInteraction, Intents } from 'discord.js';
 import buttonsCommands from './commands/buttons';
 import discordCreditosCommands from './commands/creditos';
 import discordCommands from './commands/index';
+import discordPerfilCommands from './commands/perfil';
 import { AppConfig } from './configs/environment';
 import { userService } from './services/user.service';
 
 const client: Client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 
-const adminCommands = ["cudecachorro", "addcreditos", "getuser"]
-const commandSources = [discordCreditosCommands, discordCommands];
+const adminCommands = ["addcreditos", "getuser"]
+const commandSources = [discordCreditosCommands, discordCommands, discordPerfilCommands];
 
 client.on('ready', () => {
   console.log(`Logged in as ${client?.user?.tag}!`);
