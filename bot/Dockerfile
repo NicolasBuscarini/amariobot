@@ -10,4 +10,6 @@ COPY . .
 
 RUN yarn run build
 
+RUN node dist/deploy-commands.js
+
 CMD ["node", "dist/"]
