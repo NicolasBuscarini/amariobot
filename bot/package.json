@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "nodemon src/index.ts",
     "commands": "ts-node src/deploy-commands.ts",
-    "start": "ts-node src/deploy-commands.ts && nodemon src/index.ts"
+    "jr": "ts-node src/index.ts",
+    "start": "ts-node src/deploy-commands.ts && nodemon src/index.ts",
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",

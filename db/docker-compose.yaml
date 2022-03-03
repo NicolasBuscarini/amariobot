@@ -17,7 +17,7 @@ services:
     depends_on:
       - armario-mongo
     networks:
-      - mongo-compose-network
+      - armariobot_network
 
   armario-mongo:
     container_name: armario_mongo
@@ -30,8 +30,9 @@ services:
     volumes:
       - ./volumes/MongoDB:/data/db
     networks:
-      - mongo-compose-network
+      - armariobot_network
 
 networks: 
-    mongo-compose-network:
-      driver: bridge
+  armariobot_network:
+    external:
+      name: armariobot_network

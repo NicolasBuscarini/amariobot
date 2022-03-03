@@ -4,7 +4,8 @@ import { AppConfig } from './environment';
 
 const options: Options = {
   type: 'mongo',
-  entities: [User],
+  entities: ['./dist/models'],
+  entitiesTs: ['./src/models'],
   clientUrl: AppConfig.MONGO_DB_HOST,
   user: AppConfig.MONGO_DB_USERNAME,
   password: AppConfig.MONGO_DB_PASSWORD,
