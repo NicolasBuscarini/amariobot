@@ -15,7 +15,7 @@ async function main() {
 
   await mongoDbContext.connect();
   
-  const client: Client = new Client({ intents: [Intents.FLAGS.GUILDS] });
+  const client: Client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_VOICE_STATES] });
 
   client.on('ready', () => {
     console.log(`Logged in as ${client?.user?.tag}!`);
