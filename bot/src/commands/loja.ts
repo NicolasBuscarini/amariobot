@@ -5,9 +5,13 @@ import { userService } from "../services/user.service";
 import discordTTS from 'discord-tts';
 
 const discordLojaCommands = new Map<string, any>();
-
+let botSendoUsado: boolean = false;
 
 discordLojaCommands.set("kickar", async (currentUser: User, interaction: CommandInteraction<CacheType>) => {
+    if (!await userService.gastarCreditos(currentUser, 10)){
+        return interaction.reply({content: 'Você não tem créditos suficientes', ephemeral: true});
+    };
+    
     const alvo = interaction.options.getUser('alvo')!;
     const guild = interaction.guild!;
 
@@ -27,6 +31,10 @@ discordLojaCommands.set("kickar", async (currentUser: User, interaction: Command
     }
 
     //voiceConnection(VoiceConnectionStatus.Ready);
+    if (botSendoUsado) {
+        return interaction.reply("Bot tem mais o que fazer, tente mais tarde.")
+    }
+    botSendoUsado = true;
 
     const stream = discordTTS.getVoiceStream("po mano, vaza ai", { lang: "pt"});
     const audio = createAudioResource(stream, { inputType: StreamType.Arbitrary, inlineVolume: true });
@@ -49,7 +57,6 @@ discordLojaCommands.set("kickar", async (currentUser: User, interaction: Command
         } catch (error) {
             // Seems to be a real disconnect which SHOULDN'T be recovered from
             voiceConnection.destroy();
-            //await alvoVoice?.disconnect("fulano mandou tu sair");
         }
     });
 
@@ -60,7 +67,13 @@ discordLojaCommands.set("kickar", async (currentUser: User, interaction: Command
         audioPlayer.play(audio);
         voiceConnection.dispatchAudio();
         await entersState(voiceConnection, VoiceConnectionStatus.Ready, 10_000);
-        setTimeout((c) => c.disconnect(), 3000, voiceConnection);
+        setTimeout(( c , av) => {
+            c.disconnect();
+            av?.disconnect();
+            botSendoUsado = false;
+        }, 3000, voiceConnection, alvoVoice);
+        
+
     });
     await interaction.reply('deu certo ai');
 

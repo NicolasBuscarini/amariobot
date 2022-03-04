@@ -39,9 +39,20 @@ class UserService {
 	async mudarCreditos(user: User, qtd: number) {
 		const userRepository = await this.userRepository();
 		user.credits += qtd;
+		if(user.credits < 0 )
+			user.credits = 0;
+
 		await userRepository.persistAndFlush(user);
 	}
 
+	async gastarCreditos(user: User, qtd: number) : Promise<boolean>{
+		if (user.credits < qtd) {
+			return false;
+		}
+		await this.mudarCreditos(user, -qtd);
+		return true;
+		
+	}
 }
 
 export const userService = new UserService();
