@@ -6,6 +6,11 @@ import { AppConfig } from './configs/environment';
 const commands = [
 	new SlashCommandBuilder().setName('cudecachorro').setDescription('Replies with teu cu em privado!'),
 
+	new SlashCommandBuilder().setName('kickar').setDescription('Obtém informações de um usuario')
+		.addUserOption(option => option.setName('alvo').setDescription('alvo para kickar do chat de voz')
+		.setRequired(true)),
+
+
 	new SlashCommandBuilder().setName('getuser').setDescription('Obtém informações de um usuario')
 		.addUserOption(option => option.setName('usuario').setDescription('pega um usuario')
 		.setRequired(false)),

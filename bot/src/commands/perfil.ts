@@ -1,4 +1,4 @@
-import { CacheType, CommandInteraction , MessageActionRow, MessageEmbed, MessageSelectMenu} from "discord.js";
+import { CacheType, User as DiscordUser, CommandInteraction , MessageActionRow, MessageEmbed, MessageSelectMenu} from "discord.js";
 import { User } from "../models/user.model";
 import { userService } from "../services/user.service";
 
@@ -7,13 +7,13 @@ const discordPerfilCommands = new Map<string, any>();
 discordPerfilCommands.set("perfil", async (currentUser: User, interaction: CommandInteraction<CacheType>) => {
     const mencao = interaction.options.getUser('usuario', false);
     let user : User;
-    let discordUser ;
+    let discordUser : DiscordUser ;
     if ( mencao === null) {
         discordUser = interaction.user;
         user = currentUser;
     } else {
         discordUser = mencao;
-        user = await userService.getOrCreateUserByUserId(discordUser);
+        user = await userService.getOrCreateUserByUserId(discordUser.id);
     }
 
     const row = new MessageActionRow()
@@ -21,12 +21,11 @@ discordPerfilCommands.set("perfil", async (currentUser: User, interaction: Comma
     const embed = new MessageEmbed()
         .setColor('#0099ff')
         .setURL('https://discord.js.org/')
-        .setTitle(`<!@${user.userid}>`)
-        .setDescription(`Créditos: ${user.credits}`)
-        .setImage(discordUser.avatarURL({format: "jpg"})?.toString()!);
-        
+        .setTitle(`${discordUser.username}`)
+        .setDescription(`<@!${user.userid}>\nCréditos: ${user.credits}`)
+        .setThumbnail(discordUser.avatarURL({format: "jpg"})?.toString()!);        
 
-    await interaction.reply({ content: 'Pong!', embeds: [embed] });
+    await interaction.reply({ embeds: [embed] });
 
 });
 
