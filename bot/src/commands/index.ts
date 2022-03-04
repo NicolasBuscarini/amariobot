@@ -22,4 +22,22 @@ discordCommands.set("getuser", async (currentUser: User, interaction: CommandInt
 	await interaction.reply({content: JSON.stringify(user), ephemeral: true});
 });
 
+discordCommands.set("daily" , async (currentUser: User, interaction: CommandInteraction<CacheType>) => {
+	let today = new Date(Date.now());
+	let lastDaily = currentUser.daily;
+
+	if (lastDaily > 0) {
+		let dailyDate = new Date(lastDaily);
+		if (today.getDate() == dailyDate.getDate() 
+		&& today.getMonth() == dailyDate.getMonth() 
+		&& today.getFullYear() == dailyDate.getFullYear()) {
+			return interaction.reply({content: 'Você já pegou o premio hoje. Volte amanhã!', ephemeral: true});
+		}
+	};
+
+	await userService.mudarCreditos(currentUser, 30);
+	await userService.updateUser(currentUser, {daily: Date.now()});
+	return interaction.reply("Parabens, otário! você ganhou AR$30,00 por logar hoje.")
+});
+
 export default discordCommands;

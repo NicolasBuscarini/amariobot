@@ -53,6 +53,16 @@ class UserService {
 		return true;
 		
 	}
+
+	async updateUser(user: User, partialUser: Partial<User>) {
+		const userRepository = await this.userRepository();
+		for (let key of Object.keys(partialUser)) {
+			if ((partialUser as any)[key]!== undefined) {
+				(user as any)[key] = (partialUser as any)[key];
+			}
+		}
+		await userRepository.persistAndFlush(user);
+	}
 }
 
 export const userService = new UserService();

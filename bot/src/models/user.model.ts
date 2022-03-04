@@ -11,7 +11,7 @@ export class User extends BaseEntity {
   credits: number;
 
   @Property({ nullable: false })
-  daily: boolean = false;
+  daily: number;
 
   // @OneToMany(() => Book, b => b.author, { cascade: [Cascade.ALL] })
   // books = new Collection<Book>(this);
@@ -19,8 +19,9 @@ export class User extends BaseEntity {
   // @ManyToOne(() => Book, { nullable: true })
   // favouriteBook?: Book;
 
-  constructor(userid: string, credits: number = 0) {
+  constructor(userid: string, credits: number = 0, daily = 0) {
     super();
+    this.daily = daily;
     this.userid = userid;
 		this.credits = credits;
   }

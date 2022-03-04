@@ -75,7 +75,7 @@ discordLojaCommands.set("kickar", async (currentUser: User, interaction: Command
         
 
     });
-    await interaction.reply('deu certo ai');
+    await interaction.reply(`<@!${currentUser.id}> mandou o <@!${alvo.id}> sair da chamada de voz`);
 
 });
 

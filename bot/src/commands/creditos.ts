@@ -13,13 +13,13 @@ discordCreditosCommands.set("loja", async (currentUser: User,  interaction: Comm
 	.setDescription('Loja onde você poderá gastar seus créditos sociais\n\n')
 	.setThumbnail('https://i.imgur.com/xCH7NyD.png')
 	.addFields(
-		{ name: '\nMutar alguem no servidor \n\t\tAR$50,00', value: '/mutar @usuario' },
-		{ name: 'Desmutar alguem ou você mesmo \n\t\tAR$50,00', value: '/desmutar @usuario'},
-		{ name: 'Alterar apelido de alguém ou de você mesmo \n\t\tA$200,00', value: '/apelido @usuario "Apelido"' },
-		{ name: 'Kickar do chat de voz \n\t\tAR$10,00', value: '/kickchat @usuario' },
-		{ name: 'Silenciar em algum canal de texto \n\t\tAR$300,00', value: '/silenciar @usuario "canaldetexto"'},
-		{ name: 'Silenciar em todos canais de texto \n\t\tAR$1000,00', value: '/silenciarTudo @usuario'},
-		{ name: 'Desilenciar alguém ou você mesmo \n\t\tAR$600,00', value: '/desilenciar @usuario'}
+		{ name: '\nMutar alguem no servidor (:x:  infuncionando)\n\t\tAR$50,00', value: '/mutar @usuario' },
+		{ name: 'Desmutar alguem ou você mesmo (:x:  infuncionando)\n\t\tAR$50,00', value: '/desmutar @usuario'},
+		{ name: 'Alterar apelido de alguém ou de você mesmo (:x:  infuncionando)\n\t\tA$200,00', value: '/apelido @usuario "Apelido"' },
+		{ name: 'Kickar do chat de voz (:white_check_mark: funcionando) \n\t\tAR$10,00', value: '/kickar @usuario' },
+		{ name: 'Silenciar em algum canal de texto (:x:  infuncionando)\n\t\tAR$300,00', value: '/silenciar @usuario "canaldetexto"'},
+		{ name: 'Silenciar em todos canais de texto (:x:  infuncionando)\n\t\tAR$1000,00', value: '/silenciarTudo @usuario'},
+		{ name: 'Desilenciar alguém ou você mesmo (:x:  infuncionando)\n\t\tAR$600,00', value: '/desilenciar @usuario'}
 	)
 	.setImage('https://i.imgur.com/UKK6OCb.png')
 	.setTimestamp()
