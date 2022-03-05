@@ -23,7 +23,6 @@ discordCommands.set("getuser", async (currentUser: User, interaction: CommandInt
 });
 
 discordCommands.set("daily" , async (currentUser: User, interaction: CommandInteraction<CacheType>) => {
-	console.log(Date.now());
 	let today = new Date(Date.now());
 	let lastDaily = currentUser.daily;
 
@@ -35,7 +34,7 @@ discordCommands.set("daily" , async (currentUser: User, interaction: CommandInte
 			return interaction.reply({content: 'Você já pegou o premio hoje. Volte amanhã!', ephemeral: true});
 		}
 	};
-
+	
 	await userService.adicionaCreditos(currentUser, 30);
 	await userService.updateUser(currentUser, {daily: Date.now()});
 	return interaction.reply("Parabens, otário! você ganhou AR$30,00 por logar hoje.")
