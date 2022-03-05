@@ -35,7 +35,7 @@ discordCommands.set("daily" , async (currentUser: User, interaction: CommandInte
 		}
 	};
 
-	await userService.mudarCreditos(currentUser, 30);
+	await userService.adicionaCreditos(currentUser, 30);
 	await userService.updateUser(currentUser, {daily: Date.now()});
 	return interaction.reply("Parabens, otário! você ganhou AR$30,00 por logar hoje.")
 });

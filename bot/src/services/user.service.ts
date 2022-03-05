@@ -36,20 +36,20 @@ class UserService {
 		return user!
 	}
 
-	async mudarCreditos(user: User, qtd: number) {
+	async adicionaCreditos(user: User, creditos: number) {
 		const userRepository = await this.userRepository();
-		user.credits += qtd;
+		user.credits += creditos;
 		if(user.credits < 0 )
 			user.credits = 0;
 
 		await userRepository.persistAndFlush(user);
 	}
 
-	async gastarCreditos(user: User, qtd: number) : Promise<boolean>{
-		if (user.credits < qtd) {
+	async gastarCreditos(user: User, creditos: number) : Promise<boolean>{
+		if (user.credits < creditos) {
 			return false;
 		}
-		await this.mudarCreditos(user, -qtd);
+		await this.adicionaCreditos(user, -creditos);
 		return true;
 		
 	}

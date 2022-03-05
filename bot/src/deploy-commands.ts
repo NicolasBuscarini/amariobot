@@ -8,27 +8,51 @@ const commands = [
 
 	new SlashCommandBuilder().setName('daily').setDescription('Créditos por logar diariamente.'),
 
-	new SlashCommandBuilder().setName('kickar').setDescription('Obtém informações de um usuario')
+	new SlashCommandBuilder().setName('kickar').setDescription('Desconecta uma pessoa do chat de voz por AR$10,00')
 		.addUserOption(option => option.setName('alvo').setDescription('alvo para kickar do chat de voz')
-		.setRequired(true)),
+			.setRequired(true)
+		),
 
+	new SlashCommandBuilder().setName('doarcreditos').setDescription('Doar seus créditos para uma pessoa')
+		.addUserOption(option => option.setName('usuario')
+			.setDescription('adiciona créditos a um usuario')
+			.setRequired(true)
+		)
+		.addNumberOption(option => option.setMaxValue(100000).setMinValue(1).setName('valor')
+			.setDescription('quantidade de creditos')
+			.setRequired(true)
+		),
+
+	new SlashCommandBuilder().setName('apelido').setDescription('Mude o apelido de um alvo')
+		.addUserOption(option => option.setName('alvo')
+			.setDescription('Mencione um usuario')
+			.setRequired(true)
+		)
+		.addStringOption(option => option.setName('apelido')
+			.setDescription('Defina o novo apelido do alvo')
+			.setRequired(true)
+		),
 
 	new SlashCommandBuilder().setName('getuser').setDescription('Obtém informações de um usuario')
 		.addUserOption(option => option.setName('usuario').setDescription('pega um usuario')
-		.setRequired(false)),
+			.setRequired(false)
+		),
 
 	new SlashCommandBuilder().setName('loja').setDescription('Use seus ArmarioCredits'),
 
 	new SlashCommandBuilder().setName('perfil').setDescription('Visualizar perfil')
-	.addUserOption(option => option.setName('usuario').setDescription('mencione um usuario')
-	.setRequired(false)),
+		.addUserOption(option => option.setName('usuario').setDescription('mencione um usuario')
+			.setRequired(false)
+		),
 
-	new SlashCommandBuilder().setName('addcreditos').setDescription('Obtém informações sobre seus créditos')	.addUserOption(option => option.setName('usuario')
-		.setDescription('adiciona créditos a um usuario')
-		.setRequired(true))
+	new SlashCommandBuilder().setName('addcreditos').setDescription('Adiciona creditos a um usuario. Apenas ADM')
+		.addUserOption(option => option.setName('usuario')
+			.setDescription('adiciona créditos a um usuario')
+			.setRequired(true))
 		.addNumberOption(option => option.setMaxValue(100000).setMinValue(1).setName('valor')
-		.setDescription('quantidade de creditos')
-		.setRequired(true)),
+			.setDescription('quantidade de creditos')
+			.setRequired(true)
+		),
 ]
 	.map(command => command.toJSON());
 
