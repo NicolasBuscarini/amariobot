@@ -9,7 +9,8 @@ const commands = [
 	new SlashCommandBuilder().setName('daily').setDescription('Créditos por logar diariamente.'),
 
 	new SlashCommandBuilder().setName('kickar').setDescription('Desconecta uma pessoa do chat de voz por AR$10,00')
-		.addUserOption(option => option.setName('alvo').setDescription('alvo para kickar do chat de voz')
+		.addUserOption(option => option.setName('alvo')
+			.setDescription('alvo para kickar do chat de voz')
 			.setRequired(true)
 		),
 
@@ -23,9 +24,9 @@ const commands = [
 			.setRequired(true)
 		),
 
-	new SlashCommandBuilder().setName('apelido').setDescription('Mude o apelido de um alvo')
+	new SlashCommandBuilder().setName('apelido').setDescription('Mude o apelido de um alvo por AR$200,00')
 		.addUserOption(option => option.setName('alvo')
-			.setDescription('Mencione um usuario')
+			.setDescription('Selecione um alvo')
 			.setRequired(true)
 		)
 		.addStringOption(option => option.setName('apelido')
@@ -33,15 +34,29 @@ const commands = [
 			.setRequired(true)
 		),
 
+	new SlashCommandBuilder().setName('castigo').setDescription('Dar castigo a um alvo por 5 min por AR$50,00')
+		.addUserOption(option => option.setName('alvo')
+			.setDescription('Selecione um alvo')
+			.setRequired(true)
+		),
+	
+	new SlashCommandBuilder().setName('silenciar').setDescription('Silenciar um alvo do chat de voz por AR$250,00')
+		.addUserOption(option => option.setName('alvo')
+			.setDescription('Selecione um alvo')
+			.setRequired(true)
+		),
+
 	new SlashCommandBuilder().setName('getuser').setDescription('Obtém informações de um usuario')
-		.addUserOption(option => option.setName('usuario').setDescription('pega um usuario')
+		.addUserOption(option => option.setName('usuario')
+			.setDescription('pega um usuario')
 			.setRequired(false)
 		),
 
 	new SlashCommandBuilder().setName('loja').setDescription('Use seus ArmarioCredits'),
 
 	new SlashCommandBuilder().setName('perfil').setDescription('Visualizar perfil')
-		.addUserOption(option => option.setName('usuario').setDescription('mencione um usuario')
+		.addUserOption(option => option.setName('usuario')
+			.setDescription('mencione um usuario')
 			.setRequired(false)
 		),
 

@@ -15,13 +15,11 @@ discordLojaCommands.set("loja", async (currentUser: User,  interaction: CommandI
 	.setDescription('Loja onde você poderá gastar seus créditos sociais\n\n')
 	.setThumbnail('https://i.imgur.com/xCH7NyD.png')
 	.addFields(
-		{ name: '\nMutar alguem no servidor \n(:x:  infuncionando)\n\t\tAR$50,00', value: '/mutar @usuario' },
-		{ name: 'Desmutar alguem ou você mesmo \n(:x:  infuncionando)\n\t\tAR$50,00', value: '/desmutar @usuario'},
-		{ name: 'Alterar apelido de alguém ou de você mesmo \n(:white_check_mark: funcionando)\n\t\tA$200,00', value: '/apelido @usuario "Apelido"' },
-		{ name: 'Kickar do chat de voz \n(:white_check_mark: funcionando) \n\t\tAR$10,00', value: '/kickar @usuario' },
-		{ name: 'Silenciar em algum canal de texto \n(:x:  infuncionando)\n\t\tAR$300,00', value: '/silenciar @usuario "canaldetexto"'},
-		{ name: 'Silenciar em todos canais de texto \n(:x:  infuncionando)\n\t\tAR$1000,00', value: '/silenciarTudo @usuario'},
-		{ name: 'Desilenciar alguém ou você mesmo \n(:x:  infuncionando)\n\t\tAR$600,00', value: '/desilenciar @usuario'}
+		{ name: '\nMutar alguem no servidor \n(:white_check_mark: funcionando)\n\t\tAR$250,00', value: '/mutar @usuario' },
+		{ name: 'Desmutar alguem ou você mesmo \n(:x:  infuncionando)\n\t\tAR$70,00', value: '/desmutar @usuario'},
+		{ name: 'Alterar apelido de alguém ou de você mesmo \n(:white_check_mark: funcionando)\n\t\tAR$200,00', value: '/apelido @usuario "Apelido"' },
+		{ name: 'Deixar uma pessoa de castigo por 5 minutos\n(:white_check_mark: funcionando)\n\t\tAR$100,00', value: '/castigo @usuario' },
+        { name: 'Kickar do chat de voz \n(:white_check_mark: funcionando) \n\t\tAR$10,00', value: '/kickar @usuario' },
 	)
 	.setImage('https://i.imgur.com/UKK6OCb.png')
 	.setTimestamp()
@@ -87,6 +85,7 @@ discordLojaCommands.set("kickar", async (currentUser: User, interaction: Command
         } catch (error) {
             // Seems to be a real disconnect which SHOULDN'T be recovered from
             voiceConnection.destroy();
+            botSendoUsado = false;
         }
     });
 
@@ -118,9 +117,6 @@ discordLojaCommands.set("apelido", async (currentUser: User, interaction: Comman
     const apelido = interaction.options.getString('apelido', true);
     const guild = interaction.guild!;
 
-    console.log("Dados:");
-    console.log("\tapelido:" + apelido);
-
 
     if( apelido.length > 32) {
         await userService.adicionaCreditos(currentUser, 200);
@@ -135,6 +131,109 @@ discordLojaCommands.set("apelido", async (currentUser: User, interaction: Comman
     alvoMember.setNickname(apelido, "Comando bot");
 
     await interaction.reply(`<@!${currentUser.userid}> mudou o apelido de <@!${alvo.id}>.`);
+});
+
+discordLojaCommands.set("castigo", async (currentUser: User, interaction: CommandInteraction<CacheType>) => {    
+    if (!await userService.gastarCreditos(currentUser, 100)){
+        return interaction.reply({
+            content: 'Você não tem créditos suficientes', 
+            ephemeral: true
+        });
+    };
+    
+    const alvo = interaction.options.getUser('alvo', true);
+    const guild = interaction.guild!;
+
+    const alvoMember = (await guild?.members.fetch({ user: alvo }));
+
+    if (alvoMember.permissions.has("ADMINISTRATOR")) {
+        await userService.adicionaCreditos(currentUser, 100);
+        interaction.reply(
+            "Engraçadinho... Infelizmente não é possivel dar um castigo para um adm."
+        );
+        return interaction.channel?.send(`Ademir <@!${alvo.id}>, olha o que o trouxa tentou fazer KKKKKKKKKKKKKK.`)
+    };
+
+    await alvoMember.timeout(5 * 60 * 1000, `${interaction.user.username} comprou na loja para o ${alvo.username}`)
+        .then(console.log)
+        .catch(console.error);
+
+    await interaction.reply(`<@!${currentUser.userid}> deixou o <@!${alvo.id}> de castigo.`);
+});
+
+discordLojaCommands.set("silenciar", async (currentUser: User, interaction: CommandInteraction<CacheType>) => {    
+    if (!await userService.gastarCreditos(currentUser, 250)){
+        return interaction.reply({
+            content: 'Você não tem créditos suficientes', 
+            ephemeral: true
+        });
+    };
+    
+    const alvo = interaction.options.getUser('alvo', true);
+    const guild = interaction.guild!;
+    const alvoMember = (await guild?.members.fetch({ user: alvo }));
+    const alvoVoice = alvoMember?.voice;
+
+    if (alvoVoice.serverMute) {
+        !await userService.adicionaCreditos(currentUser, 250);
+        return await interaction.reply({content: `<@!${alvo.id}> já está mutado.` , ephemeral: true});
+    }
+
+    await alvoVoice.setMute();
+    await interaction.reply(`<@!${currentUser.userid}> mutou o <@!${alvo.id}>.`);
+
+    const voiceChannelAlvo = alvoVoice?.channel;
+    if ( !voiceChannelAlvo ) {
+        return
+    } else {
+        
+
+        if (botSendoUsado) {
+            await userService.adicionaCreditos(currentUser, 10);
+            await interaction.channel?.send("Bot esta sendo usado, infelizmente nao conseguiu conectar no chat de voz.");
+            return
+        }
+        botSendoUsado = true;  
+
+        const stream = discordTTS.getVoiceStream(`cala a boquinha, ${alvoMember.nickname}`, { lang: "pt"});
+        const audio = createAudioResource(stream, { inputType: StreamType.Arbitrary, inlineVolume: true });
+
+        let voiceConnection: VoiceConnection = joinVoiceChannel({
+            channelId: voiceChannelAlvo.id,
+            guildId: guild.id,
+            adapterCreator: voiceChannelAlvo.guild.voiceAdapterCreator,
+            debug: true,
+            selfMute: false
+        });
+
+        voiceConnection.on(VoiceConnectionStatus.Disconnected, async (oldState, newState) => {
+            try {
+                await Promise.race([
+                    entersState(voiceConnection, VoiceConnectionStatus.Signalling, 5_000),
+                    entersState(voiceConnection, VoiceConnectionStatus.Connecting, 5_000),
+                ]);
+                // Seems to be reconnecting to a new channel - ignore disconnect
+            } catch (error) {
+                // Seems to be a real disconnect which SHOULDN'T be recovered from
+                voiceConnection.destroy();
+                botSendoUsado = false;
+            }
+        });
+
+        voiceConnection.on(VoiceConnectionStatus.Ready, async () => {
+            voiceConnection.setSpeaking(true);
+            let audioPlayer = new AudioPlayer();
+            voiceConnection.subscribe(audioPlayer);
+            audioPlayer.play(audio);
+            voiceConnection.dispatchAudio();
+            await entersState(voiceConnection, VoiceConnectionStatus.Ready, 10_000);
+            setTimeout(( c ) => {
+                c.disconnect();
+                botSendoUsado = false;
+            }, 4400, voiceConnection);
+        });
+
+    }
 });
 
 export default discordLojaCommands;

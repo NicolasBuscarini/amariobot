@@ -6,7 +6,6 @@ const { MessageEmbed } = require('discord.js');
 const buttonsCommands = new Map<string, any>();
 
 buttonsCommands.set("comprar1", async (currentUser: User, interaction: CommandInteraction<CacheType>) => {
-
     interaction.reply("comprou!")
 });
 
@@ -14,7 +13,5 @@ buttonsCommands.set("comprar1", async (currentUser: User, interaction: CommandIn
 buttonsCommands.set("comprar2", async (currentUser: User, interaction: CommandInteraction<CacheType>) => {
 
 });
-
-
 
 export default buttonsCommands;

@@ -1,7 +1,6 @@
-import { CacheType, CommandInteraction } from "discord.js";
+import { CacheType, CommandInteraction, MessageEmbed } from "discord.js";
 import { User } from "../models/user.model";
 import { userService } from "../services/user.service";
-const { MessageEmbed } = require('discord.js');
 
 const discordCreditosCommands = new Map<string, any>();
 
