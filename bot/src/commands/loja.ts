@@ -28,7 +28,7 @@ discordLojaCommands.set("loja", async (currentUser: User,  interaction: CommandI
 	.setFooter({ text: 'Armario Creditos', iconURL: 'https://i.imgur.com/AfFp7pu.png' });
 
 	await interaction.reply({ embeds: [exampleEmbed] });
-})
+});
 
 discordLojaCommands.set("kickar", async (currentUser: User, interaction: CommandInteraction<CacheType>) => {    
     if (!await userService.gastarCreditos(currentUser, 10)){

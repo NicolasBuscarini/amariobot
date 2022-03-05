@@ -23,6 +23,7 @@ discordCommands.set("getuser", async (currentUser: User, interaction: CommandInt
 });
 
 discordCommands.set("daily" , async (currentUser: User, interaction: CommandInteraction<CacheType>) => {
+	console.log(Date.now());
 	let today = new Date(Date.now());
 	let lastDaily = currentUser.daily;
 
