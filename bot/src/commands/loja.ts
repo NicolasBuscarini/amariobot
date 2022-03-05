@@ -175,7 +175,7 @@ discordLojaCommands.set("silenciar", async (currentUser: User, interaction: Comm
     const alvoVoice = alvoMember?.voice;
 
     if (alvoVoice.serverMute) {
-        !await userService.adicionaCreditos(currentUser, 250);
+        await userService.adicionaCreditos(currentUser, 250);
         return await interaction.reply({content: `<@!${alvo.id}> já está mutado.` , ephemeral: true});
     }
 
