@@ -19,13 +19,11 @@ discordPerfilCommands.set("perfil", async (currentUser: User, interaction: Comma
 
     const row = new MessageActionRow()
 
-    //let exp = currentUser.exp;
-    let exp = 511;
+    let exp = user.exp;
     let resultado: number = exp;
     let level = 0;
     let c: boolean = false;
     while( c != true ) {
-        console.log(level);
         level += 1;
         resultado = resultado/2;
 
@@ -34,20 +32,35 @@ discordPerfilCommands.set("perfil", async (currentUser: User, interaction: Comma
             level -= 1;
         };
     }
-    console.log("Level:" + level);
+    console.log(`expe: ${exp}`);
+    console.log("level:"+level);
 
-    const total = Math.pow(2, level+1) -2;
-    console.log(total);
+    let total;
+    let inicio;
+    let current;
+    
+    if (level == 0) {
+        level = 1;
+        current = exp;  
+        total = Math.pow(2, level+1) -2;      
+    } else { 
+        inicio = Math.pow(2, level) -2;
+        total = Math.pow(2, level+1) -2;
+        current = total - inicio;
+    }
+    
 
-    const progressBar = progressbar.splitBar(126, 38, 11);
+    console.log("total:"+total);
+    console.log("current:"+current);
+
+    const progressBar = progressbar.splitBar(total, current, 11);
 
     const embed = new MessageEmbed()
         .setColor('#0099ff')
         .setURL('https://discord.js.org/')
         .setTitle(`${discordUser.username}`)
         .addFields(
-            {name: `Level: ${level}`, value: `${progressBar[0]} ${38}/${126}xp`, inline: true},
-
+            {name: `Level: ${level}`, value: `${progressBar[0]} ${current}/${total}xp`, inline: true},
         )
         .setDescription(`<@!${user.userid}>\nCréditos: ${user.credits}`)
         .setThumbnail(discordUser.avatarURL({format: "jpg"})?.toString()!);        
