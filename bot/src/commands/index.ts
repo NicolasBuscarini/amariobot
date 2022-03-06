@@ -2,12 +2,21 @@ import { CacheType, CommandInteraction } from "discord.js";
 import { User } from "../models/user.model";
 import { userService } from "../services/user.service";
 const { MessageEmbed } = require('discord.js');
+import progressbar from "string-progressbar";
+
 
 const discordCommands = new Map<string, any>();
 
 discordCommands.set("cudecachorro", async (currentUser: User, interaction: CommandInteraction<CacheType>) => {
+	// Assaign values to total and current values
+	var total = 100;
+	var current = 50;
+	// First two arguments are mandatory
+	const teste = progressbar.splitBar(total, current);
+	// Returns: Array<String, String>
+	
 	await interaction.user.send("ele caga, ele caga");
-	await interaction.reply("=D");
+	await interaction.reply(`${teste}`);
 });
 
 discordCommands.set("getuser", async (currentUser: User, interaction: CommandInteraction<CacheType>) => {
@@ -35,9 +44,9 @@ discordCommands.set("daily" , async (currentUser: User, interaction: CommandInte
 		}
 	};
 	
-	await userService.adicionaCreditos(currentUser, 30);
+	await userService.adicionaCreditos(currentUser, 40);
 	await userService.updateUser(currentUser, {daily: Date.now()});
-	return interaction.reply("Parabens, otário! você ganhou AR$30,00 por logar hoje.")
+	return interaction.reply("Parabens, otário! você ganhou AR$40,00 por logar hoje.")
 });
 
 export default discordCommands;

@@ -8,7 +8,7 @@ const commands = [
 
 	new SlashCommandBuilder().setName('daily').setDescription('Créditos por logar diariamente.'),
 
-	new SlashCommandBuilder().setName('kickar').setDescription('Desconecta uma pessoa do chat de voz por AR$10,00')
+	new SlashCommandBuilder().setName('kickar').setDescription('Desconecta uma pessoa do chat de voz por AR$20,00')
 		.addUserOption(option => option.setName('alvo')
 			.setDescription('alvo para kickar do chat de voz')
 			.setRequired(true)

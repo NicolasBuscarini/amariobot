@@ -19,7 +19,7 @@ discordLojaCommands.set("loja", async (currentUser: User,  interaction: CommandI
 		{ name: 'Desmutar alguem ou você mesmo \n(:x:  infuncionando)\n\t\tAR$70,00', value: '/desmutar @usuario'},
 		{ name: 'Alterar apelido de alguém ou de você mesmo \n(:white_check_mark: funcionando)\n\t\tAR$200,00', value: '/apelido @usuario "Apelido"' },
 		{ name: 'Deixar uma pessoa de castigo por 5 minutos\n(:white_check_mark: funcionando)\n\t\tAR$100,00', value: '/castigo @usuario' },
-        { name: 'Kickar do chat de voz \n(:white_check_mark: funcionando) \n\t\tAR$10,00', value: '/kickar @usuario' },
+        { name: 'Kickar do chat de voz \n(:white_check_mark: funcionando) \n\t\tAR$20,00', value: '/kickar @usuario' },
 	)
 	.setImage('https://i.imgur.com/UKK6OCb.png')
 	.setTimestamp()
@@ -29,7 +29,7 @@ discordLojaCommands.set("loja", async (currentUser: User,  interaction: CommandI
 });
 
 discordLojaCommands.set("kickar", async (currentUser: User, interaction: CommandInteraction<CacheType>) => {    
-    if (!await userService.gastarCreditos(currentUser, 10)){
+    if (!await userService.gastarCreditos(currentUser, 20)){
         return interaction.reply({content: 'Você não tem créditos suficientes', ephemeral: true});
     };
 
@@ -41,12 +41,12 @@ discordLojaCommands.set("kickar", async (currentUser: User, interaction: Command
     const voiceChannelAlvo = alvoVoice?.channel;
 
     if ( alvo.bot ) {
-        await userService.adicionaCreditos(currentUser, 10);
+        await userService.adicionaCreditos(currentUser, 20);
         return interaction.reply({ content: "Não pode usar em bot não seu bobão!", ephemeral: true})
     }
 
     if ( !voiceChannelAlvo ) {
-        await userService.adicionaCreditos(currentUser, 10);
+        await userService.adicionaCreditos(currentUser, 20);
         return interaction.reply({ content: 'Alvo não esta em nenhum canal de voz', ephemeral: true })
     }
 
@@ -59,7 +59,7 @@ discordLojaCommands.set("kickar", async (currentUser: User, interaction: Command
 
     //voiceConnection(VoiceConnectionStatus.Ready);
     if (botSendoUsado) {
-        await userService.adicionaCreditos(currentUser, 10);
+        await userService.adicionaCreditos(currentUser, 20);
         return interaction.reply("Bot tem mais o que fazer, tente mais tarde.")
     }
     botSendoUsado = true;    
@@ -189,7 +189,7 @@ discordLojaCommands.set("silenciar", async (currentUser: User, interaction: Comm
         
 
         if (botSendoUsado) {
-            await userService.adicionaCreditos(currentUser, 10);
+            await userService.adicionaCreditos(currentUser, 250);
             await interaction.channel?.send("Bot esta sendo usado, infelizmente nao conseguiu conectar no chat de voz.");
             return
         }

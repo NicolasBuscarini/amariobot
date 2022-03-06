@@ -1,7 +1,7 @@
 import { CacheType, User as DiscordUser, CommandInteraction , MessageActionRow, MessageEmbed, MessageSelectMenu} from "discord.js";
 import { User } from "../models/user.model";
 import { userService } from "../services/user.service";
-const progressbar = require('string-progressbar');
+import progressbar from "string-progressbar";
 
 const discordPerfilCommands = new Map<string, any>();
 
@@ -19,28 +19,34 @@ discordPerfilCommands.set("perfil", async (currentUser: User, interaction: Comma
 
     const row = new MessageActionRow()
 
-    var exp = currentUser.exp;
+    //let exp = currentUser.exp;
+    let exp = 511;
     let resultado: number = exp;
-    let contador = 0;
-    while( resultado <= 2 ) {
+    let level = 0;
+    let c: boolean = false;
+    while( c != true ) {
+        console.log(level);
+        level += 1;
         resultado = resultado/2;
-        contador += 1
-    }
-    var current = exp - Math.pow(2, contador);
 
-    // Assaign values to total and current values
-    var total = 100;
-    var current = 50;
-    // First two arguments are mandatory
-    progressbar.splitBar(total, current);
-    // Returns: Array<String, String>
+        if (resultado <= 2) {
+            c = true;
+            level -= 1;
+        };
+    }
+    console.log("Level:" + level);
+
+    const total = Math.pow(2, level+1) -2;
+    console.log(total);
+
+    const progressBar = progressbar.splitBar(126, 38, 11);
 
     const embed = new MessageEmbed()
         .setColor('#0099ff')
         .setURL('https://discord.js.org/')
         .setTitle(`${discordUser.username}`)
         .addFields(
-            {name: "level", value: `0`, inline: true},
+            {name: `Level: ${level}`, value: `${progressBar[0]} ${38}/${126}xp`, inline: true},
 
         )
         .setDescription(`<@!${user.userid}>\nCréditos: ${user.credits}`)
@@ -51,7 +57,7 @@ discordPerfilCommands.set("perfil", async (currentUser: User, interaction: Comma
 });
 
 
-discordPerfilCommands.set("comprar2", async (currentUser: User, interaction: CommandInteraction<CacheType>) => {
+discordPerfilCommands.set("teste", async (currentUser: User, interaction: CommandInteraction<CacheType>) => {
 
 });
 
