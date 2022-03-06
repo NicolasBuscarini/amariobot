@@ -1,7 +1,7 @@
 import { CacheType, User as DiscordUser, CommandInteraction , MessageActionRow, MessageEmbed, MessageSelectMenu} from "discord.js";
 import { User } from "../models/user.model";
 import { userService } from "../services/user.service";
-import progressbar from "string-progressbar";
+//import progressbar from "string-progressbar";
 
 const discordPerfilCommands = new Map<string, any>();
 
@@ -53,14 +53,14 @@ discordPerfilCommands.set("perfil", async (currentUser: User, interaction: Comma
     console.log("total:"+total);
     console.log("current:"+current);
 
-    const progressBar = progressbar.splitBar(total, current, 11);
+    //const progressBar = progressbar.splitBar(total, current, 11);
 
     const embed = new MessageEmbed()
         .setColor('#0099ff')
         .setURL('https://discord.js.org/')
         .setTitle(`${discordUser.username}`)
         .addFields(
-            {name: `Level: ${level}`, value: `${progressBar[0]} ${current}/${total}xp`, inline: true},
+            //{name: `Level: ${level}`, value: `${progressBar[0]} ${current}/${total}xp`, inline: true},
         )
         .setDescription(`<@!${user.userid}>\nCréditos: ${user.credits}`)
         .setThumbnail(discordUser.avatarURL({format: "jpg"})?.toString()!);        
