@@ -74,6 +74,8 @@ const commands = [
 			.setDescription("Motivo")
 		),
 
+	new SlashCommandBuilder().setName('blackjack').setDescription('Jogar BlackJack.'),
+
 	new SlashCommandBuilder().setName('removecreditos').setDescription('Adiciona creditos a um usuario. Apenas ADM')
 		.addUserOption(option => option.setName('usuario')
 			.setDescription('remove créditos de um usuario')

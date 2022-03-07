@@ -21,20 +21,18 @@ discordPerfilCommands.set("perfil", async (currentUser: User, interaction: Comma
     interaction.channel
 
     console.log("experiencia: " + user.exp)
-    const level : number = await userService.getLevelByExp(user.exp);
-    const inicio : number = await userService.getExpToPreviousLevel(user.exp);
-    const total : number = await userService.getLevelExp(level);
+    const userLevel : number = await userService.getLevelByExp(user.exp);
+    const total : number = await userService.getExpToNextLevel(userLevel);
+    const current = user.exp - await userService.getExpByLevel(userLevel);
 
-    const current = user.exp;
-
-    const progressBar = progressbar.filledBar(total, current, 15, "⬜" ,"🟩")[0];
-
+    const progressBar = progressbar.filledBar(total, current, 15, "<:level2:950448131374469231>" ,"<:level:950432727893676083>" )[0];
+    
     const embed = new MessageEmbed()
         .setColor('#0099ff')
         .setURL('https://discord.js.org/')
         .setTitle(`${discordUser.username}`)
         .addFields(
-            {name: `Level: ${level}`, value: `${progressBar} ${current}/${total}xp`, inline: true},
+            {name: `Level: ${userLevel}`, value: `${progressBar} ${current}/${total}xp`, inline: true},
         )
         .setDescription(`<@!${user.userid}>\nCréditos: ${user.credits}`)
         .setThumbnail(discordUser.avatarURL({format: "jpg"})?.toString()!);        
@@ -47,7 +45,5 @@ discordPerfilCommands.set("perfil", async (currentUser: User, interaction: Comma
 discordPerfilCommands.set("teste", async (currentUser: User, interaction: CommandInteraction<CacheType>) => {
 
 });
-
-
 
 export default discordPerfilCommands;

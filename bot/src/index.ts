@@ -2,14 +2,15 @@ import { CacheType, Client, CommandInteraction, Intents } from 'discord.js';
 import buttonsCommands from './commands/buttons';
 import discordCreditosCommands from './commands/creditos';
 import discordCommands from './commands/index';
+import discordJogosCommands from './commands/jogos';
 import discordLojaCommands from './commands/loja';
 import discordPerfilCommands from './commands/perfil';
 import { AppConfig } from './configs/environment';
 import { mongoDbContext } from './context/mongo-db.context';
 import { userService } from './services/user.service';
 
-const adminCommands = ["addcreditos", "getuser", "removecreditos"]
-const commandSources = [discordCreditosCommands, discordCommands, discordPerfilCommands, discordLojaCommands];
+const adminCommands = ["addcreditos", "getuser", "removecreditos", "blackjack"]
+const commandSources = [discordCreditosCommands, discordCommands, discordPerfilCommands, discordLojaCommands, discordJogosCommands ];
 
 async function main() {
 

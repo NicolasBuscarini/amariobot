@@ -55,43 +55,27 @@ class UserService {
 		
 	}
 
-	async getLevelExp(level: number) {
-		return 2 ** level;
-	}
-
 	async getLevelByExp(exp: number) {
-		let level = 1;
-		let i = 0;
-		while (1) {
-			i++;
-			if (exp / (2 ** i) < 1) {
-				break;
-			}
-	  
-			level++;
+		return Math.floor((Math.sqrt(625+100*exp)-25)/50)
+	  }
+
+	async getExpByLevel(level: number) {
+		let exp = 0;
+		while (await this.getLevelByExp(exp) < level) {
+		  exp += 50;
 		}
-		return level;
+		return exp;
 	}
 
-	async getExpToNextLevel(exp: number,) {
-		const level = await this.getLevelByExp(exp)
-		const expNextLevel = await this.getLevelExp(level);
-		
-		return expNextLevel - exp;
+	async getExpToNextLevel(currentLevel: number) {
+		return await this.getExpByLevel(currentLevel+1) - await this.getExpByLevel(currentLevel);
 	}
 
-	async getExpToPreviousLevel(exp: number,) {
-		const level = await this.getLevelByExp(exp)
-		const expNextLevel = await this.getLevelExp(level -1);
-		
-		return expNextLevel - exp;
-	}
-
-	async ganharXp(user: User, xp: number, channel: TextBasedChannel){
+	async ganharExp(user: User, exp: number, channel: TextBasedChannel){
 		const userRepository = await this.userRepository();
 
 		const oldLevel = await this.getLevelByExp(user.exp);
-		user.exp += xp;
+		user.exp += exp;
 		const newLevel = await this.getLevelByExp(user.exp);
 
 		await userRepository.persistAndFlush(user);

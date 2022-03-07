@@ -633,6 +633,14 @@ discord-api-types@^0.27.3:
   resolved "https://registry.yarnpkg.com/discord-api-types/-/discord-api-types-0.27.3.tgz#518e99a548b62a7912a09e94ad90d0612e2053c6"
   integrity sha512-HOG64DTpZ7CB5EU9eKbjHD50H5qG1pxKG8pmFfHUMKjKvEWeLBHfw0c9xF1cruiYLnBb3+n7m3jBWxZ3H1hcgQ==
 
+discord-blackjack@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/discord-blackjack/-/discord-blackjack-4.0.0.tgz#b3d6ad06ca74fce777636346a7c97d21ce738986"
+  integrity sha512-7zB6CeG2TsAXUJopaHERj98bVCIBXgseoTiKwSmpg2/6HiR0XszWwLE24P4GpHdRqyP/7BhprFa8WJ170tY63w==
+  dependencies:
+    discord.js "^13.6.0"
+    shuffle-array "^1.0.1"
+
 discord-tts@^1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/discord-tts/-/discord-tts-1.2.1.tgz#08ab418946c6a406783c6486fcdb3329b61c0836"
@@ -1542,6 +1550,11 @@ set-blocking@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/set-blocking/-/set-blocking-2.0.0.tgz#045f9782d011ae9a6803ddd382b24392b3d890f7"
   integrity sha1-BF+XgtARrppoA93TgrJDkrPYkPc=
+
+shuffle-array@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/shuffle-array/-/shuffle-array-1.0.1.tgz#c4ff3cfe74d16f93730592301b25e6577b12898b"
+  integrity sha1-xP88/nTRb5NzBZIwGyXmV3sSiYs=
 
 sift@16.0.0:
   version "16.0.0"

@@ -100,9 +100,11 @@ discordLojaCommands.set("kickar", async (currentUser: User, interaction: Command
             botSendoUsado = false;
             c.disconnect();
             av?.disconnect();
+            userService.ganharExp(currentUser, 5, interaction.channel!);
         }, 4400, voiceConnection, alvoVoice);
     });
     await interaction.reply(`<@!${currentUser.userid}> mandou o <@!${alvo.id}> sair da chamada de voz`);
+
 });
 
 discordLojaCommands.set("apelido", async (currentUser: User, interaction: CommandInteraction<CacheType>) => {    
@@ -130,6 +132,9 @@ discordLojaCommands.set("apelido", async (currentUser: User, interaction: Comman
     alvoMember.setNickname(apelido, "Comando bot");
 
     await interaction.reply(`<@!${currentUser.userid}> mudou o apelido de <@!${alvo.id}>.`);
+
+    await userService.ganharExp(currentUser, 55, interaction.channel!);
+
 });
 
 discordLojaCommands.set("castigo", async (currentUser: User, interaction: CommandInteraction<CacheType>) => {    
@@ -158,6 +163,8 @@ discordLojaCommands.set("castigo", async (currentUser: User, interaction: Comman
         .catch(console.error);
 
     await interaction.reply(`<@!${currentUser.userid}> deixou o <@!${alvo.id}> de castigo.`);
+    await userService.ganharExp(currentUser, 30, interaction.channel!);
+
 });
 
 discordLojaCommands.set("silenciar", async (currentUser: User, interaction: CommandInteraction<CacheType>) => {    
@@ -185,8 +192,6 @@ discordLojaCommands.set("silenciar", async (currentUser: User, interaction: Comm
     if ( !voiceChannelAlvo ) {
         return
     } else {
-        
-
         if (botSendoUsado) {
             await userService.adicionaCreditos(currentUser, 250);
             await interaction.channel?.send("Bot esta sendo usado, infelizmente nao conseguiu conectar no chat de voz.");
@@ -237,6 +242,7 @@ discordLojaCommands.set("silenciar", async (currentUser: User, interaction: Comm
             setTimeout(( c ) => {
                 c.disconnect();
                 botSendoUsado = false;
+                userService.ganharExp(currentUser, 70, interaction.channel!);
             }, 4400, voiceConnection);
         });
 
