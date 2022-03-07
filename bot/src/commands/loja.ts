@@ -56,16 +56,23 @@ discordLojaCommands.set("kickar", async (currentUser: User, interaction: Command
     }
     botSendoUsado = true;    
 
-    const stream = discordTTS.getVoiceStream(`po mano, vaza ai ${alvoMember.nickname}`, { lang: "pt"});
-    const audio = createAudioResource(stream, { inputType: StreamType.Arbitrary, inlineVolume: true });
+    let stream, audio, voiceConnection;
 
-    let voiceConnection: VoiceConnection = joinVoiceChannel({
-        channelId: voiceChannelAlvo.id,
-        guildId: guild.id,
-        adapterCreator: voiceChannelAlvo.guild.voiceAdapterCreator,
-        debug: true,
-        selfMute: false
-    });
+    try {
+        stream = discordTTS.getVoiceStream(`po mano, vaza ai ${alvoMember.nickname}`, { lang: "pt"});
+        audio = createAudioResource(stream, { inputType: StreamType.Arbitrary, inlineVolume: true });
+
+        voiceConnection: VoiceConnection = joinVoiceChannel({
+            channelId: voiceChannelAlvo.id,
+            guildId: guild.id,
+            adapterCreator: voiceChannelAlvo.guild.voiceAdapterCreator,
+            debug: true,
+            selfMute: false
+        });
+    } catch (e) {
+        botSendoUsado = false;
+        throw e;
+    }
 
     voiceConnection.on(VoiceConnectionStatus.Disconnected, async (oldState, newState) => {
         try {
@@ -89,9 +96,9 @@ discordLojaCommands.set("kickar", async (currentUser: User, interaction: Command
         voiceConnection.dispatchAudio();
         await entersState(voiceConnection, VoiceConnectionStatus.Ready, 10_000);
         setTimeout(( c , av) => {
+            botSendoUsado = false;
             c.disconnect();
             av?.disconnect();
-            botSendoUsado = false;
         }, 4400, voiceConnection, alvoVoice);
     });
     await interaction.reply(`<@!${currentUser.userid}> mandou o <@!${alvo.id}> sair da chamada de voz`);
@@ -186,16 +193,24 @@ discordLojaCommands.set("silenciar", async (currentUser: User, interaction: Comm
         }
         botSendoUsado = true;  
 
-        const stream = discordTTS.getVoiceStream(`cala a boquinha, ${alvoMember.nickname}`, { lang: "pt"});
-        const audio = createAudioResource(stream, { inputType: StreamType.Arbitrary, inlineVolume: true });
+        let stream, audio;
+        let voiceConnection: VoiceConnection;
 
-        let voiceConnection: VoiceConnection = joinVoiceChannel({
-            channelId: voiceChannelAlvo.id,
-            guildId: guild.id,
-            adapterCreator: voiceChannelAlvo.guild.voiceAdapterCreator,
-            debug: true,
-            selfMute: false
-        });
+        try {
+            stream = discordTTS.getVoiceStream(`cala a boquinha, ${alvoMember.nickname}`, { lang: "pt"});
+            audio = createAudioResource(stream, { inputType: StreamType.Arbitrary, inlineVolume: true });
+
+            voiceConnection = joinVoiceChannel({
+                channelId: voiceChannelAlvo.id,
+                guildId: guild.id,
+                adapterCreator: voiceChannelAlvo.guild.voiceAdapterCreator,
+                debug: true,
+                selfMute: false
+            });
+        } catch (e) {
+            botSendoUsado = false;
+            throw e;
+        }
 
         voiceConnection.on(VoiceConnectionStatus.Disconnected, async (oldState, newState) => {
             try {
