@@ -50,14 +50,6 @@ discordLojaCommands.set("kickar", async (currentUser: User, interaction: Command
         return interaction.reply({ content: 'Alvo não esta em nenhum canal de voz', ephemeral: true })
     }
 
-    //const permissions = voiceChannelAlvo.permissionsFor(interaction.user)!;
-    //if (!permissions.has("CONNECT") || !permissions.has("SPEAK")) {
-    //    return interaction.reply(
-    //        "I need the permissions to join and speak in your voice channel!"
-    //    );
-    //}
-
-    //voiceConnection(VoiceConnectionStatus.Ready);
     if (botSendoUsado) {
         await userService.adicionaCreditos(currentUser, 20);
         return interaction.reply("Bot tem mais o que fazer, tente mais tarde.")
@@ -116,7 +108,6 @@ discordLojaCommands.set("apelido", async (currentUser: User, interaction: Comman
     const alvo = interaction.options.getUser('alvo', true);
     const apelido = interaction.options.getString('apelido', true);
     const guild = interaction.guild!;
-
 
     if( apelido.length > 32) {
         await userService.adicionaCreditos(currentUser, 200);
