@@ -25,16 +25,16 @@ discordPerfilCommands.set("perfil", async (currentUser: User, interaction: Comma
     const inicio : number = await userService.getExpToPreviousLevel(user.exp);
     const total : number = await userService.getLevelExp(level);
 
-    const current = user.exp - inicio;
+    const current = user.exp;
 
-    const progressBar = progressbar.splitBar(total, current, 15);
+    const progressBar = progressbar.filledBar(total, current, 15, "⬜" ,"🟩")[0];
 
     const embed = new MessageEmbed()
         .setColor('#0099ff')
         .setURL('https://discord.js.org/')
         .setTitle(`${discordUser.username}`)
         .addFields(
-            {name: `Level: ${level}`, value: `${progressBar[0]} ${current}/${total}xp`, inline: true},
+            {name: `Level: ${level}`, value: `${progressBar} ${current}/${total}xp`, inline: true},
         )
         .setDescription(`<@!${user.userid}>\nCréditos: ${user.credits}`)
         .setThumbnail(discordUser.avatarURL({format: "jpg"})?.toString()!);        

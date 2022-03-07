@@ -15,7 +15,7 @@ discordLojaCommands.set("loja", async (currentUser: User,  interaction: CommandI
 	.setDescription('Loja onde você poderá gastar seus créditos sociais\n\n')
 	.setThumbnail('https://i.imgur.com/xCH7NyD.png')
 	.addFields(
-		{ name: '\nMutar alguem no servidor \n(:white_check_mark: funcionando)\n\t\tAR$250,00', value: '/mutar @usuario' },
+		{ name: '\nMutar alguem no servidor \n(:white_check_mark: funcionando)\n\t\tAR$250,00', value: '/silenciar @usuario' },
 		{ name: 'Desmutar alguem ou você mesmo \n(:x:  infuncionando)\n\t\tAR$70,00', value: '/desmutar @usuario'},
 		{ name: 'Alterar apelido de alguém ou de você mesmo \n(:white_check_mark: funcionando)\n\t\tAR$200,00', value: '/apelido @usuario "Apelido"' },
 		{ name: 'Deixar uma pessoa de castigo por 5 minutos\n(:white_check_mark: funcionando)\n\t\tAR$100,00', value: '/castigo @usuario' },
@@ -56,13 +56,14 @@ discordLojaCommands.set("kickar", async (currentUser: User, interaction: Command
     }
     botSendoUsado = true;    
 
-    let stream, audio, voiceConnection;
+    let stream, audio;
+    let voiceConnection: VoiceConnection;
 
     try {
         stream = discordTTS.getVoiceStream(`po mano, vaza ai ${alvoMember.nickname}`, { lang: "pt"});
         audio = createAudioResource(stream, { inputType: StreamType.Arbitrary, inlineVolume: true });
 
-        voiceConnection: VoiceConnection = joinVoiceChannel({
+        voiceConnection = joinVoiceChannel({
             channelId: voiceChannelAlvo.id,
             guildId: guild.id,
             adapterCreator: voiceChannelAlvo.guild.voiceAdapterCreator,
