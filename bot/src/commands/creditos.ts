@@ -27,7 +27,32 @@ discordCreditosCommands.set("addcreditos", async (currentUser: User,  interactio
 
 	const valor = interaction.options.getNumber('valor')!;
 	await userService.adicionaCreditos(user, valor);
-	await interaction.reply(`Adicionado AR\$${valor} para <@!${user.userid}> .`);
-})
+
+	let motivo: string | null = interaction.options.getString('motivo', false); 
+	if (motivo === null) {
+		motivo = "Sem nenhum motivo. ";
+	} else {
+		motivo = "Motivo: " + motivo;
+	}
+
+	await interaction.reply(`Adicionado AR\$${valor} para <@!${user.userid}> .\n` + motivo);
+});
+
+discordCreditosCommands.set("removecreditos", async (currentUser: User,  interaction: CommandInteraction<CacheType>)=> {
+	let input = interaction.options.getUser('usuario')!; 
+	const user = await userService.getOrCreateUserByUserId(input.id);
+
+	const valor = interaction.options.getNumber('valor')!;
+	await userService.adicionaCreditos(user, -valor);
+
+	let motivo: string | null = interaction.options.getString('motivo', false); 
+	if (motivo === null) {
+		motivo = "Sem nenhum motivo. ";
+	} else {
+		motivo = "Motivo: " + motivo;
+	}
+
+	await interaction.reply(`Removide AR\$${valor} de <@!${user.userid}> .\n` + motivo);
+});
 
 export default discordCreditosCommands;

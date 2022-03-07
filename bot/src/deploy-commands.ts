@@ -2,6 +2,7 @@ import { SlashCommandBuilder} from '@discordjs/builders';
 import { REST } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v9';
 import { AppConfig } from './configs/environment';
+import options from './configs/mongo.config';
 
 const commands = [
 	new SlashCommandBuilder().setName('cudecachorro').setDescription('Replies with teu cu em privado!'),
@@ -63,10 +64,27 @@ const commands = [
 	new SlashCommandBuilder().setName('addcreditos').setDescription('Adiciona creditos a um usuario. Apenas ADM')
 		.addUserOption(option => option.setName('usuario')
 			.setDescription('adiciona créditos a um usuario')
-			.setRequired(true))
+			.setRequired(true)
+		)
 		.addNumberOption(option => option.setMaxValue(100000).setMinValue(1).setName('valor')
 			.setDescription('quantidade de creditos')
 			.setRequired(true)
+		)
+		.addStringOption(option => option.setName("motivo")
+			.setDescription("Motivo")
+		),
+
+	new SlashCommandBuilder().setName('removecreditos').setDescription('Adiciona creditos a um usuario. Apenas ADM')
+		.addUserOption(option => option.setName('usuario')
+			.setDescription('remove créditos de um usuario')
+			.setRequired(true)
+		)
+		.addNumberOption(option => option.setMaxValue(100000).setMinValue(1).setName('valor')
+			.setDescription('quantidade de creditos')
+			.setRequired(true)
+		)
+		.addStringOption(option => option.setName("motivo")
+			.setDescription("Motivo")
 		),
 ]
 	.map(command => command.toJSON());

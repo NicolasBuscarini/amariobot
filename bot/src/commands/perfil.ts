@@ -9,6 +9,7 @@ discordPerfilCommands.set("perfil", async (currentUser: User, interaction: Comma
     const mencao = interaction.options.getUser('usuario', false);
     let user : User;
     let discordUser : DiscordUser ;
+    
     if ( mencao === null) {
         discordUser = interaction.user;
         user = currentUser;
@@ -16,8 +17,6 @@ discordPerfilCommands.set("perfil", async (currentUser: User, interaction: Comma
         discordUser = mencao;
         user = await userService.getOrCreateUserByUserId(discordUser.id);
     }
-
-    const row = new MessageActionRow()
 
     let exp = user.exp;
     let resultado: number = exp;
