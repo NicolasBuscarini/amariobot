@@ -4,6 +4,7 @@
 
 ### Node ###
 # Logs
+yarn.lock
 logs
 *.log
 npm-debug.log*
