@@ -30,6 +30,7 @@
     "node-opus": "^0.3.3",
     "nodemon": "^2.0.15",
     "opusscript": "^0.0.8",
+    "string-progressbar": "^1.0.4",
     "ts-node": "^10.6.0",
     "typescript": "^4.6.2"
   }

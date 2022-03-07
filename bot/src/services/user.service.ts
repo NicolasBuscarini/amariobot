@@ -2,6 +2,7 @@ import { User } from "../models/user.model";
 import { mongoDbContext as ctx } from "../context/mongo-db.context";
 import { EntityRepository } from "@mikro-orm/core";
 import { MongoEntityRepository } from "@mikro-orm/mongodb";
+import { TextBasedChannel } from "discord.js";
 
 class UserService {
 
@@ -52,6 +53,52 @@ class UserService {
 		await this.adicionaCreditos(user, -creditos);
 		return true;
 		
+	}
+
+	async getLevelExp(level: number) {
+		return 2 ** level;
+	}
+
+	async getLevelByExp(exp: number) {
+		let level = 1;
+		let i = 0;
+		while (1) {
+			i++;
+			if (exp / (2 ** i) < 1) {
+				break;
+			}
+	  
+			level++;
+		}
+		return level;
+	}
+
+	async getExpToNextLevel(exp: number,) {
+		const level = await this.getLevelByExp(exp)
+		const expNextLevel = await this.getLevelExp(level);
+		
+		return expNextLevel - exp;
+	}
+
+	async getExpToPreviousLevel(exp: number,) {
+		const level = await this.getLevelByExp(exp)
+		const expNextLevel = await this.getLevelExp(level -1);
+		
+		return expNextLevel - exp;
+	}
+
+	async ganharXp(user: User, xp: number, channel: TextBasedChannel){
+		const userRepository = await this.userRepository();
+
+		const oldLevel = await this.getLevelByExp(user.exp);
+		user.exp += xp;
+		const newLevel = await this.getLevelByExp(user.exp);
+
+		await userRepository.persistAndFlush(user);
+
+		if (oldLevel != newLevel ) {
+			channel.send(`Parabéns! Você subiu para o level *${newLevel}*`)
+		}
 	}
 
 	async updateUser(user: User, partialUser: Partial<User>) {

@@ -18,41 +18,16 @@ discordPerfilCommands.set("perfil", async (currentUser: User, interaction: Comma
         user = await userService.getOrCreateUserByUserId(discordUser.id);
     }
 
-    let exp = user.exp;
-    let resultado: number = exp;
-    let level = 0;
-    let c: boolean = false;
-    while( c != true ) {
-        level += 1;
-        resultado = resultado/2;
+    interaction.channel
 
-        if (resultado <= 2) {
-            c = true;
-            level -= 1;
-        };
-    }
-    console.log(`expe: ${exp}`);
-    console.log("level:"+level);
+    console.log("experiencia: " + user.exp)
+    const level : number = await userService.getLevelByExp(user.exp);
+    const inicio : number = await userService.getExpToPreviousLevel(user.exp);
+    const total : number = await userService.getLevelExp(level);
 
-    let total;
-    let inicio;
-    let current;
-    
-    if (level == 0) {
-        level = 1;
-        current = exp;  
-        total = Math.pow(2, level+1) -2;      
-    } else { 
-        inicio = Math.pow(2, level) -2;
-        total = Math.pow(2, level+1) -2;
-        current = total - inicio;
-    }
-    
+    const current = user.exp - inicio;
 
-    console.log("total:"+total);
-    console.log("current:"+current);
-
-    const progressBar = progressbar.splitBar(total, current, 11);
+    const progressBar = progressbar.splitBar(total, current, 15);
 
     const embed = new MessageEmbed()
         .setColor('#0099ff')
