@@ -22,7 +22,7 @@ discordJogosCommands.set("blackjack", async (currentUser: User, interaction: Com
         title: "Blackjack game",
         color: "RANDOM",
         fields: [
-            {name: "ATENÇÃO. Se você demorar para jogar, você perderá a aposta", value: '\u200B'}
+            {name: "ATENÇÃO. Se você demorar para jogar, você perderá a aposta", value: '\u200B'},
             {name: `Mão do <@!${currentUser.userid}>`, value: '\u200B' },
             {name: `Mão do Dealer`, value: '\u200B' }
         ],
