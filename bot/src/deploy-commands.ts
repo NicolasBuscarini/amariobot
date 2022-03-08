@@ -74,7 +74,11 @@ const commands = [
 			.setDescription("Motivo")
 		),
 
-	new SlashCommandBuilder().setName('blackjack').setDescription('Jogar BlackJack.'),
+	new SlashCommandBuilder().setName('blackjack').setDescription('Jogar BlackJack.')
+		.addNumberOption(option => option.setMaxValue(100000).setMinValue(1).setName('aposta')
+			.setDescription('Valor da aposta')
+			.setRequired(true)
+		),
 
 	new SlashCommandBuilder().setName('removecreditos').setDescription('Adiciona creditos a um usuario. Apenas ADM')
 		.addUserOption(option => option.setName('usuario')

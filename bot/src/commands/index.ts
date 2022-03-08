@@ -33,6 +33,7 @@ discordCommands.set("getuser", async (currentUser: User, interaction: CommandInt
 
 discordCommands.set("daily" , async (currentUser: User, interaction: CommandInteraction<CacheType>) => {
 	let today = new Date(Date.now());
+	today.setUTCHours(today.getHours() +3);
 	let lastDaily = currentUser.daily;
 
 	if (lastDaily > 0) {
