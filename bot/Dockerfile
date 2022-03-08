@@ -8,7 +8,7 @@ RUN pip3 install --no-cache --upgrade pip setuptools
 
 # Instalar ferramentas de build
 RUN apk update
-RUN apk add build-base curl gcc abuild binutils binutils-doc gcc-doc linux-headers
+RUN apk add build-base curl gcc abuild binutils binutils-doc gcc-doc linux-headers ffmpeg
 
 # Selecionar diretório do app
 WORKDIR /usr/src/app
