@@ -2,7 +2,6 @@ import { SlashCommandBuilder} from '@discordjs/builders';
 import { REST } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v9';
 import { AppConfig } from './configs/environment';
-import options from './configs/mongo.config';
 
 const commands = [
 	new SlashCommandBuilder().setName('cudecachorro').setDescription('Replies with teu cu em privado!'),
@@ -35,13 +34,23 @@ const commands = [
 			.setRequired(true)
 		),
 
-	new SlashCommandBuilder().setName('castigo').setDescription('Dar castigo a um alvo por 5 min por AR$50,00')
+	new SlashCommandBuilder().setName('castigo').setDescription('Dar castigo. 1min = AR$30,00')
+		.addNumberOption(option => option.setName('minutos')
+			.setDescription('Digite o tempo em minutos. (1min = AR$30,00)')
+			.setRequired(true)
+		)
 		.addUserOption(option => option.setName('alvo')
 			.setDescription('Selecione um alvo')
 			.setRequired(true)
 		),
 	
 	new SlashCommandBuilder().setName('silenciar').setDescription('Silenciar um alvo do chat de voz por AR$250,00')
+		.addUserOption(option => option.setName('alvo')
+			.setDescription('Selecione um alvo')
+			.setRequired(true)
+		),
+	
+	new SlashCommandBuilder().setName('dessilenciar').setDescription('Dessilencia um alvo do chat de voz por AR$70,00')
 		.addUserOption(option => option.setName('alvo')
 			.setDescription('Selecione um alvo')
 			.setRequired(true)
@@ -53,7 +62,7 @@ const commands = [
 			.setRequired(false)
 		),
 
-	new SlashCommandBuilder().setName('loja').setDescription('Use seus ArmarioCredits'),
+	new SlashCommandBuilder().setName('loja').setDescription('Use seus ArmárioCredits'),
 
 	new SlashCommandBuilder().setName('perfil').setDescription('Visualizar perfil')
 		.addUserOption(option => option.setName('usuario')
@@ -80,7 +89,7 @@ const commands = [
 			.setRequired(true)
 		),
 
-	new SlashCommandBuilder().setName('removecreditos').setDescription('Adiciona creditos a um usuario. Apenas ADM')
+	new SlashCommandBuilder().setName('removecreditos').setDescription('Adiciona créditos a um usuario. Apenas ADM')
 		.addUserOption(option => option.setName('usuario')
 			.setDescription('remove créditos de um usuario')
 			.setRequired(true)

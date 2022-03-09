@@ -20,7 +20,6 @@ discordPerfilCommands.set("perfil", async (currentUser: User, interaction: Comma
 
     interaction.channel
 
-    console.log("experiencia: " + user.exp)
     const userLevel : number = await userService.getLevelByExp(user.exp);
     const total : number = await userService.getExpToNextLevel(userLevel);
     const current = user.exp - await userService.getExpByLevel(userLevel);

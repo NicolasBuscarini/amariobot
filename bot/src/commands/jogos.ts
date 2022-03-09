@@ -24,7 +24,7 @@ discordJogosCommands.set("blackjack", async (currentUser: User, interaction: Com
         title: "Blackjack game",
         color: "RANDOM",
         thumbnail: {
-            url: 'https://i.imgur.com/V1cE3E5.png',
+            url: 'https://i.imgur.com/MGjMGjM.png',
         },
         fields: [
             {name: `Mão do ${userMember.nickname}\t\t`, value: '\u200B', inline : true },
@@ -35,7 +35,7 @@ discordJogosCommands.set("blackjack", async (currentUser: User, interaction: Com
             {name: "Aposta:", value: `A${aposta.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`},
         ],
         image: {
-            url: 'https://i.imgur.com/MGjMGjM.png',
+            url: 'https://i.imgur.com/V1cE3E5.png',
         },
         footer: {
             text: `Jogo de: ${userMember.nickname}`,
@@ -131,7 +131,7 @@ discordJogosCommands.set("blackjack", async (currentUser: User, interaction: Com
             break;
 
         case "TIE":
-            await userService.ganharExp(currentUser, aposta/2, interaction.channel!);
+            await userService.ganharExp(currentUser, aposta/4, interaction.channel!);
 
             const embedTie = new MessageEmbed()
                 .setTitle("BlackJack")
@@ -147,10 +147,10 @@ discordJogosCommands.set("blackjack", async (currentUser: User, interaction: Com
                 );
             await interaction.channel!.send({ embeds: [embedTie]});
 
-        case "TIMEOUT":
+        case "CANCEL":
             const embedTimeout = new MessageEmbed()
                 .setTitle("BlackJack")
-                .setDescription(`Timeout! Você já viu suas cartas então perdeu a aposta de A${aposta.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}.`)
+                .setDescription(`Timeout ou cancelado! Você já viu suas cartas então perdeu a aposta de A${aposta.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}.`)
                 .setColor("BLUE")
                 .addFields(
                     { name: `\u200B` , value: `<@!${currentUser.userid}>` },
@@ -158,18 +158,6 @@ discordJogosCommands.set("blackjack", async (currentUser: User, interaction: Com
                     { name: `Resultado: `, value: `${msgMethod}`, inline: false },
                 );
             await interaction.channel!.send({ embeds: [embedTimeout]});
-
-        case "CANCEL":
-            const embedCancel = new MessageEmbed()
-                .setTitle("BlackJack")
-                .setDescription(`Cancelado! Você já viu suas cartas então perdeu a aposta de A${aposta.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}.`)
-                .setColor("BLUE")
-                .addFields(
-                    { name: `\u200B` , value: `<@!${currentUser.userid}>` },
-                    { name: `Você tem um total de: A${currentUser.credits.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}` , value: '\u200B'},
-                    { name: `Resultado: `, value: `${msgMethod}`, inline: false },
-                );
-            await interaction.channel!.send({ embeds: [embedCancel]});
     }
 });
 
