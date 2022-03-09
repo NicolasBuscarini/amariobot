@@ -5,9 +5,8 @@ import blackjack from "discord-blackjack";
 
 const discordJogosCommands = new Map<string, any>();
 
-
-
 discordJogosCommands.set("blackjack", async (currentUser: User, interaction: CommandInteraction<CacheType>) => {
+    let multiplicador = 0.75;
     const guild = interaction.guild!;
     const userMember = (await guild?.members.fetch({ user: interaction.user }));
 
@@ -42,8 +41,7 @@ discordJogosCommands.set("blackjack", async (currentUser: User, interaction: Com
         },
     }
 
-    let game = await blackjack(interaction, {resultEmbed: false, normalEmbed: false, normalEmbedContent: embed , doubledown: false, split: false, transition: "edit" } );
-
+    let game = await blackjack(interaction, {resultEmbed: false, normalEmbed: false, normalEmbedContent: embed , doubledown: false, split: false, transition: "delete" } );
 
     function msgCards (cards: Array<any>) : Array<string> {
         let msgCards : string = "[ " ;
@@ -65,6 +63,7 @@ discordJogosCommands.set("blackjack", async (currentUser: User, interaction: Com
      let msgMethod
      switch (game.method) {
         case "You had blackjack":
+            multiplicador = 1
             msgMethod = "Sortudo. Você fez *BLACKJACK*";
              break;
         case "You busted":
@@ -95,11 +94,11 @@ discordJogosCommands.set("blackjack", async (currentUser: User, interaction: Com
         case "WIN":
             await userService.ganharExp(currentUser, aposta, interaction.channel!);
 
-            await userService.adicionaCreditos(currentUser, aposta*2);
+            await userService.adicionaCreditos(currentUser, aposta*2*multiplicador);
 
             const embedWin = new MessageEmbed()
                 .setTitle("BlackJack")
-                .setDescription(`Parabéns, você ganhou! Você ganhou A${(aposta * 2).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}!`)
+                .setDescription(`Parabéns, você ganhou! Você ganhou A${(aposta * 2 * multiplicador).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}!`)
                 .setColor("GREEN")
                 .addFields(
                     { name: `\u200B` , value: `<@!${currentUser.userid}> <a:VaiBrasil:852727978416537601>` }, 
@@ -159,6 +158,11 @@ discordJogosCommands.set("blackjack", async (currentUser: User, interaction: Com
                 );
             await interaction.channel!.send({ embeds: [embedTimeout]});
     }
+});
+
+discordJogosCommands.set("jokenpo", async (currentUser: User, interaction: CommandInteraction<CacheType>) => {
+    
+
 });
 
 export default discordJogosCommands;

@@ -89,6 +89,16 @@ const commands = [
 			.setRequired(true)
 		),
 
+	new SlashCommandBuilder().setName('jokenpo').setDescription('Jogar BlackJack.')
+		.addNumberOption(option => option.setMaxValue(100000).setMinValue(1).setName('aposta')
+			.setDescription('Valor da aposta')
+			.setRequired(true)
+		)
+		.addUserOption(option => option.setName('desafiante')
+			.setDescription('Desafiante')
+			.setRequired(true)
+		),
+
 	new SlashCommandBuilder().setName('removecreditos').setDescription('Adiciona créditos a um usuario. Apenas ADM')
 		.addUserOption(option => option.setName('usuario')
 			.setDescription('remove créditos de um usuario')

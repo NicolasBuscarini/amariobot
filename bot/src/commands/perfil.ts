@@ -17,9 +17,7 @@ discordPerfilCommands.set("perfil", async (currentUser: User, interaction: Comma
         discordUser = mencao;
         user = await userService.getOrCreateUserByUserId(discordUser.id);
     }
-
-    interaction.channel
-
+    
     const userLevel : number = await userService.getLevelByExp(user.exp);
     const total : number = await userService.getExpToNextLevel(userLevel);
     const current = user.exp - await userService.getExpByLevel(userLevel);
