@@ -34,7 +34,7 @@ async function main() {
             return;
           } catch (e) { 
             console.error(e)
-            await interaction.reply({content: "Algo deu errado ao executar esse comando", ephemeral: true})
+            await interaction.reply({content: "Algo deu errado ao executar esse comando. Por favor reporte ao <@!576116903051788288>", ephemeral: true})
             return;
           }
         }

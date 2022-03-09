@@ -81,7 +81,7 @@ class UserService {
 		await userRepository.persistAndFlush(user);
 
 		if (oldLevel != newLevel ) {
-			channel.send(`Parabéns! Você subiu para o level *${newLevel}*`)
+			channel.send(`Parabéns, <@!${user.userid}>!  Você subiu para o *level ${newLevel}*`)
 		}
 	}
 

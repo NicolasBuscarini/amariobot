@@ -5,6 +5,8 @@ import blackjack from "discord-blackjack";
 
 const discordJogosCommands = new Map<string, any>();
 
+
+
 discordJogosCommands.set("blackjack", async (currentUser: User, interaction: CommandInteraction<CacheType>) => {
     const guild = interaction.guild!;
     const userMember = (await guild?.members.fetch({ user: interaction.user }));
@@ -21,48 +23,74 @@ discordJogosCommands.set("blackjack", async (currentUser: User, interaction: Com
     let embed = {
         title: "Blackjack game",
         color: "RANDOM",
+        thumbnail: {
+            url: 'https://i.imgur.com/V1cE3E5.png',
+        },
         fields: [
-            {name: "ATENÇÃO. Se você demorar para jogar, você perderá a aposta", value: '\u200B'},
-            {name: `Mão do <@!${currentUser.userid}>`, value: '\u200B' },
-            {name: `Mão do Dealer`, value: '\u200B' }
+            {name: `Mão do ${userMember.nickname}\t\t`, value: '\u200B', inline : true },
+            {name: `Mão do Dealer`, value: '\u200B', inline: true },
+            {name: "\u200B", value: `<@!${currentUser.userid}>`},
+
+            {name: "ATENÇÃO!!! SE DEMORAR PARA JOGAR SERÁ GASTO SEUS CRÉDITOS", value: "\u200B"},
+            {name: "Aposta:", value: `A${aposta.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`},
         ],
+        image: {
+            url: 'https://i.imgur.com/MGjMGjM.png',
+        },
+        footer: {
+            text: `Jogo de: ${userMember.nickname}`,
+        },
     }
 
-    let game = await blackjack(interaction, {resultEmbed: false, normalEmbed: false, normalEmbedContent: embed} );
+    let game = await blackjack(interaction, {resultEmbed: false, normalEmbed: false, normalEmbedContent: embed , doubledown: false, split: false, transition: "edit" } );
 
-    console.log(game.normalEmbedContent)
 
-    console.log("Resultado")
-    console.log(game.result)
+    function msgCards (cards: Array<any>) : Array<string> {
+        let msgCards : string = "[ " ;
+        let totalCards : number = 0;
+        cards.forEach(cards => {
+            msgCards += "`" + cards.emoji + cards.rank + "` ";
+            totalCards += cards.value;
+        });
+        msgCards += "]";
+        return [msgCards, totalCards.toString()]
+    }
 
-    console.log("Minhas cartas")
-    console.log(game.ycard)
-    console.log(game.ycard.length)
+    let ycards = msgCards(game.ycard);
 
-    console.log("Dealer cartas")
-    console.log(game.dcard)
+    let dcards;
+    if ( game.method == "You busted") { dcards = ["[ ` ? ` ]", "` ? `"]; }
+     else { dcards = msgCards(game.dcard); }
 
-    let msgYCards : string = "[ " ;
-    let totalYCards : number = 0;
-    game.ycard.forEach(ycards => {
-        msgYCards += "`" + ycards.rank + ycards.emoji + "` ";
-        totalYCards += ycards.value;
-    });
-    msgYCards += "]";
-    console.log(msgYCards);
-
-    let msgDCards : string = "[ " ;
-    let totalDCards : number = 0;
-    game.dcard.forEach(dcards => {
-        msgDCards += "`" + dcards.rank + dcards.emoji + "` ";
-        totalDCards += dcards.value;
-    });
-    msgDCards += "]";
-    console.log(msgDCards);
-
+     let msgMethod
+     switch (game.method) {
+        case "You had blackjack":
+            msgMethod = "Sortudo. Você fez *BLACKJACK*";
+             break;
+        case "You busted":
+             msgMethod = "Você passou de 21";
+             break;
+        case  "You had more":
+            msgMethod = "Você chegou mais proximo de 21";
+            break;
+        case  "Dealer had blackjack":
+            msgMethod = "Dealer fez *BLACKJACK*";
+            break;
+        case  "Dealer had more":
+            msgMethod = "Dealer chegou mais proximo de 21";
+            break;
+        case  "Dealer busted":
+            msgMethod = "Dealer ultrapassou 21";
+            break;
+        case  "Tie":
+            msgMethod = "EMPATE";
+            break;
+        case  "None":
+            msgMethod = "Partida cancelada ou demorou para jogar";
+            break;
+     }
 
     switch (game.result) {
-
             
         case "WIN":
             await userService.ganharExp(currentUser, aposta, interaction.channel!);
@@ -71,13 +99,14 @@ discordJogosCommands.set("blackjack", async (currentUser: User, interaction: Com
 
             const embedWin = new MessageEmbed()
                 .setTitle("BlackJack")
-                .setDescription(`Parabéns, você ganhou! Você ganhou AR\$${aposta * 2}!`)
+                .setDescription(`Parabéns, você ganhou! Você ganhou A${(aposta * 2).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}!`)
                 .setColor("GREEN")
                 .addFields(
-                    { name: `\u200B` , value: `<@!${currentUser.userid}> <a:VaiBrasil:852727978416537601>` },
-                    { name: `Você tem um total de: ${currentUser.credits}` , value: '\u200B' },
-                    { name: `Suas cartas:  `, value: `${msgYCards} \n Total: ${totalYCards}`, inline: true },
-                    { name: `Cartas do Dealer:  `, value: `${msgDCards} \n Total: ${totalDCards}`, inline: true },
+                    { name: `\u200B` , value: `<@!${currentUser.userid}> <a:VaiBrasil:852727978416537601>` }, 
+                    { name: `Você tem um total de: A${currentUser.credits.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}` , value: '\u200B' },
+                    { name: `Resultado: `, value: `${msgMethod}`, inline: false },
+                    { name: `Suas cartas:  `, value: `${ycards[0]} \n Total: ${ycards[1]}`, inline: true },
+                    { name: `Cartas do Dealer: `, value: `${dcards[0]} \n Total: ${dcards[1]}`, inline: true },
                 );
             await interaction.channel!.send({ embeds: [embedWin]});
 
@@ -88,12 +117,14 @@ discordJogosCommands.set("blackjack", async (currentUser: User, interaction: Com
 
             const embedLose = new MessageEmbed()
                 .setTitle("BlackJack")
-                .setDescription(`Você perdeu AR\$${aposta}. `)
+                .setDescription(`Você perdeu A${aposta.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}. `)
                 .setColor("RED")
                 .addFields(
-                    { name: `Que triste <@!${currentUser.userid}>. Você tem um total de: ${currentUser.credits}` , value: "\u200B"},
-                    { name: `Suas cartas:  `, value: `${msgYCards} \nTotal: ${totalYCards}`, inline: true },
-                    { name: `Cartas do Dealer:  `, value: `${msgDCards} \n Total: ${totalDCards}`, inline: true },
+                    { name: `\u200B` , value: `<@!${currentUser.userid}>` }, 
+                    { name: `Você tem um total de: A${currentUser.credits.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}` , value: "\u200B"},
+                    { name: `Resultado: `, value: `${msgMethod}`, inline: false },
+                    { name: `Suas cartas:  `, value: `${ycards[0]} \nTotal: ${ycards[1]}`, inline: true },
+                    { name: `Cartas do Dealer:  `, value: `${dcards[0]} \n Total: ${dcards[1]}`, inline: true },
                 );
             await interaction.channel!.send({ embeds: [embedLose]});
 
@@ -104,16 +135,42 @@ discordJogosCommands.set("blackjack", async (currentUser: User, interaction: Com
 
             const embedTie = new MessageEmbed()
                 .setTitle("BlackJack")
-                .setDescription(`Empate! Você perdeu sua aposta de AR\$${aposta}. (Empate é da casa) `)
+                .setDescription(`Empate! Você perdeu sua aposta de A${aposta.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}. (Empate é da casa) `)
                 .setColor("BLUE")
                 .addFields(
-                    { name: `<@!${currentUser.userid}>. Você tem um total de: ${currentUser.credits}` , value: '\u200B'},
-                    { name: `Suas cartas:  `, value: `${msgYCards} \nTotal: ${totalYCards}`, inline: true },
-                    { name: `Cartas do Dealer:  `, value: `${msgDCards} \n Total: ${totalDCards}`, inline: true },
+                    { name: `\u200B` , value: `<@!${currentUser.userid}>` },
+                    { name: `Você tem um total de: A${currentUser.credits.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}` , value: '\u200B'},
+                  
+                    { name: `Resultado: `, value: `${msgMethod}`, inline: false },
+                    { name: `Suas cartas:  `, value: `${ycards[0]} \nTotal: ${ycards[1]}`, inline: true },
+                    { name: `Cartas do Dealer:  `, value: `${dcards[0]} \n Total: ${dcards[1]}`, inline: true },
                 );
             await interaction.channel!.send({ embeds: [embedTie]});
-    }
 
+        case "TIMEOUT":
+            const embedTimeout = new MessageEmbed()
+                .setTitle("BlackJack")
+                .setDescription(`Timeout! Você já viu suas cartas então perdeu a aposta de A${aposta.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}.`)
+                .setColor("BLUE")
+                .addFields(
+                    { name: `\u200B` , value: `<@!${currentUser.userid}>` },
+                    { name: `Você tem um total de: A${currentUser.credits.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}` , value: '\u200B'},
+                    { name: `Resultado: `, value: `${msgMethod}`, inline: false },
+                );
+            await interaction.channel!.send({ embeds: [embedTimeout]});
+
+        case "CANCEL":
+            const embedCancel = new MessageEmbed()
+                .setTitle("BlackJack")
+                .setDescription(`Cancelado! Você já viu suas cartas então perdeu a aposta de A${aposta.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}.`)
+                .setColor("BLUE")
+                .addFields(
+                    { name: `\u200B` , value: `<@!${currentUser.userid}>` },
+                    { name: `Você tem um total de: A${currentUser.credits.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}` , value: '\u200B'},
+                    { name: `Resultado: `, value: `${msgMethod}`, inline: false },
+                );
+            await interaction.channel!.send({ embeds: [embedCancel]});
+    }
 });
 
 export default discordJogosCommands;
