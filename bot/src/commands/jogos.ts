@@ -13,7 +13,7 @@ interface Jokenpo {
     userDiscordOpponent: DiscordUser | null, 
     channel: TextBasedChannel | null,
     aposta: number
-}
+};
 export let jokenpo : Jokenpo = { 
     ativo: false,
     jogada1: null, 
@@ -203,14 +203,17 @@ discordJogosCommands.set("jokenpo", async (currentUser: User, interaction: Comma
     jokenpo.userDiscordOpponent = oponenteDiscordUser;
     jokenpo.aposta = aposta;
 
-    if (!await userService.gastarCreditos(currentUser, aposta)){
+
+    if (currentUser.credits < aposta) {
+        jokenpo.ativo = false;
         return interaction.reply({
             content: 'Você não tem créditos suficientes', 
             ephemeral: true
         });
-    };
+    }
 
     if (oponenteApplicationUser.credits < aposta) {
+        jokenpo.ativo = false;
         return interaction.reply({
             content: `Oponente não tem saldo de créditos suficientes. Olhe o perfil dele com o /perfil <@!${oponenteDiscordUser.id}> para descobrir quanto ele tem.`, 
             ephemeral: true
@@ -223,7 +226,8 @@ discordJogosCommands.set("jokenpo", async (currentUser: User, interaction: Comma
         .setDescription(`<@!${currentUser.userid}> está desafiando <@!${oponenteDiscordUser.id}> para uma partida de jokenpo valendo ${aposta.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`)
         .setColor("BLUE")
         .addFields(
-            { name: `\u200B` , value: `Uma mensagem foi enviada para cada um no privado para escolher sua jogada` }, 
+            { name: `\u200B` , value: `Para recusar o desafio apenas não responda a esta mensagem` }, 
+            { name: `O desafio tem um tempo de 1 minuto para fazer sua jogada` , value: `\u200B` }, 
         );
 
         const row = new MessageActionRow()
@@ -231,15 +235,18 @@ discordJogosCommands.set("jokenpo", async (currentUser: User, interaction: Comma
                 new MessageButton()
 					.setCustomId('pedra')
 					.setLabel('Pedra')
-					.setStyle('SECONDARY'),
+					.setStyle('SECONDARY')
+                    .setEmoji('🪨'),
                 new MessageButton()
 					.setCustomId('papel')
 					.setLabel('Papel')
-					.setStyle('PRIMARY'),
+					.setStyle('PRIMARY')
+                    .setEmoji('📰'),
 				new MessageButton()
 					.setCustomId('tesoura')
 					.setLabel('Tesoura')
-					.setStyle('DANGER'),
+					.setStyle('DANGER')
+                    .setEmoji('✂️'),
 			);
             
         let message = await user.send({embeds: [embedPrivado], components: [row]});
@@ -258,7 +265,6 @@ discordJogosCommands.set("jokenpo", async (currentUser: User, interaction: Comma
             };
             message.delete();
         }, 60000)
-
         return ;
     }
 
@@ -267,13 +273,12 @@ discordJogosCommands.set("jokenpo", async (currentUser: User, interaction: Comma
 
     const embedStart = new MessageEmbed()
         .setTitle("Jokenpo")
-        .setDescription(`<@!${currentUser.userid}> está desafiando <@!${oponenteDiscordUser.id}> para uma partida de jokenpo valendo A${aposta.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}}`)
+        .setDescription(`<@!${currentUser.userid}> está desafiando <@!${oponenteDiscordUser.id}> para uma partida de jokenpo valendo A${aposta.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`)
         .setColor("BLUE")
         .addFields(
             { name: `\u200B` , value: `Uma mensagem foi enviada para cada um no privado para escolher sua jogada` }, 
         );
     await interaction.reply({ embeds: [embedStart]});
-
 
 });
 

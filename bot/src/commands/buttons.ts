@@ -1,4 +1,4 @@
-import { ButtonInteraction, CacheType, CommandInteraction , User as DiscordUser} from "discord.js";
+import { ButtonInteraction, CacheType, CommandInteraction , MessageEmbed, User as DiscordUser} from "discord.js";
 import { User } from "../models/user.model";
 import { userService } from "../services/user.service";
 import { jokenpo } from "./jogos";
@@ -19,29 +19,56 @@ function jokenpoPlay () {
     }
 };
 
-function jokenpoResult(vencedor: User | null | undefined, discordUser: DiscordUser) {
+async function jokenpoResult(vencedor: User | null | undefined, discordUser: DiscordUser) {
     if ( vencedor === undefined ) return discordUser.send("Adversário ainda não jogou... Aguarde a resposta do seu oponente") 
     else if (vencedor === null) {
-        userService.adicionaCreditos(jokenpo.userApplicationOpponent!, jokenpo.aposta);
-        userService.adicionaCreditos(jokenpo.userApplicationStarter!, jokenpo.aposta);
         jokenpo.channel!.send(`Empate entre <@!${jokenpo.userApplicationStarter!.userid}> e <@!${jokenpo.userApplicationOpponent!.userid}>`)
         jokenpo.ativo = false;
     }
     else {
-        userService.adicionaCreditos(vencedor, (jokenpo.aposta*2));
-        jokenpo.channel!.send(`Vencedor <@!${vencedor.userid}>`);
+        await userService.adicionaCreditos(jokenpo.userApplicationStarter!, -jokenpo.aposta);
+        await userService.adicionaCreditos(jokenpo.userApplicationOpponent!, -jokenpo.aposta);
+        await userService.adicionaCreditos(vencedor, (jokenpo.aposta*2));
+
+        await userService.ganharExp(jokenpo.userApplicationStarter!, (jokenpo.aposta * 1/10), jokenpo.channel!)  
+        await userService.ganharExp(jokenpo.userApplicationOpponent!, (jokenpo.aposta * 1/10), jokenpo.channel!)  
+        await userService.ganharExp(vencedor, (jokenpo.aposta * 4/10), jokenpo.channel!)   
+        
+        jokenpo.userDiscordStarter?.send(`Vencedor do jokenpo: ${vencedor.userid}`);
+        jokenpo.userDiscordOpponent?.send(`Vencedor do jokenpo: ${vencedor.userid}`);
+
+
+        const jokenpoEmbedWin = new MessageEmbed()
+            .addFields(
+                {name: `Resultado`, value: '\u200B', inline : false },
+                {name: `\u200B`, value: `Desafiante <@!${jokenpo.userApplicationStarter?.userid}>:`, inline : false },
+                {name: `\u200B`, value: `Desafiado <@!${jokenpo.userApplicationStarter?.userid}>:`, inline: true },
+                {name: `${jokenpo.jogada1}`, value: `\u200B`, inline : false },
+                {name: `${jokenpo.jogada2}`, value: `\u200B`, inline : true },
+
+                {name: `*VENCEDOR:*`, value: `<@!${vencedor.userid}>`},
+                {name: "Aposta:", value: `A${jokenpo.aposta.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`},
+
+            )
+            .setTitle("Jokenpo")
+            .setColor("RANDOM")
+            .setThumbnail('https://i.imgur.com/8hBKLiU.png')
+            .setImage('https://i.imgur.com/OSYsZU0.png')
+            .setFooter(`Jokenpo`);
+        
+        jokenpo.channel!.send({embeds: [jokenpoEmbedWin]});
         jokenpo.ativo = false;
     }
 };
 
 buttonsCommands.set("pedra", async (currentUser: User, interaction: CommandInteraction<CacheType>) => {
-    if (jokenpo.userApplicationStarter?.userid == currentUser.userid) {
+    if (jokenpo.userApplicationStarter?.userid == currentUser.userid && jokenpo.jogada1 === null) {
         jokenpo.jogada1 = "pedra";
-    } else if (jokenpo.userApplicationOpponent?.userid == currentUser.userid){
-        jokenpo.jogada2 = "pedra";
+        await interaction.reply(`Você escolheu Pedra`);
+    } else if (jokenpo.userApplicationOpponent?.userid == currentUser.userid && jokenpo.jogada2 === null){
+        await interaction.reply(`Você escolheu Pedra`);
     } else {
-        interaction.reply("certo");
-        return interaction.user.send("algo deu errado");
+        await interaction.reply("Você não pode mudar sua escolha");
     }
 
     let play = jokenpoPlay()
@@ -50,13 +77,16 @@ buttonsCommands.set("pedra", async (currentUser: User, interaction: CommandInter
 
 
 buttonsCommands.set("papel", async (currentUser: User, interaction: ButtonInteraction<CacheType>) => {
-    if (jokenpo.userApplicationStarter?.userid == currentUser.userid) {
+    if (jokenpo.userApplicationStarter?.userid == currentUser.userid && jokenpo.jogada1 === null) {
         jokenpo.jogada1 = "papel";
-    } else if (jokenpo.userApplicationOpponent?.userid == currentUser.userid){
+        await interaction.reply(`Você escolheu Papel`);
+
+    } else if (jokenpo.userApplicationOpponent?.userid == currentUser.userid && jokenpo.jogada2 === null){
         jokenpo.jogada2 = "papel";
+        await interaction.reply(`Você escolheu Papel`);
+
     } else {
-        interaction.reply("certo");
-        return interaction.user.send("algo deu errado");
+        await interaction.reply("Você não pode mudar sua escolha");
     }
 
     interaction.reply("Você escolheu papel!");
@@ -66,15 +96,15 @@ buttonsCommands.set("papel", async (currentUser: User, interaction: ButtonIntera
 });
 
 buttonsCommands.set("tesoura", async (currentUser: User, interaction: ButtonInteraction<CacheType>) => {
-    if (jokenpo.userApplicationStarter?.userid == currentUser.userid) {
+    if (jokenpo.userApplicationStarter?.userid == currentUser.userid && jokenpo.jogada1 === null) {
         jokenpo.jogada1 = "tesoura";
-        interaction.reply(`Você escolheu papel na partida contra o <!@${jokenpo}>!`);
+        await interaction.reply(`Você escolheu Tesoura`);
 
-    } else if (jokenpo.userApplicationOpponent?.userid == currentUser.userid){
+    } else if (jokenpo.userApplicationOpponent?.userid == currentUser.userid && jokenpo.jogada2 === null){
         jokenpo.jogada2 = "tesoura";
+        await interaction.reply(`Você escolheu Tesoura`);
     } else {
-        interaction.reply("certo");
-        return interaction.user.send("algo deu errado");
+        await interaction.reply("Você não pode mudar sua escolha");
     }
 
     let play = jokenpoPlay()

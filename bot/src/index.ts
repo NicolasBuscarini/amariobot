@@ -9,7 +9,7 @@ import { AppConfig } from './configs/environment';
 import { mongoDbContext } from './context/mongo-db.context';
 import { userService } from './services/user.service';
 
-const adminCommands = ["addcreditos", "getuser", "removecreditos", "jokenpo"]
+const adminCommands = ["addcreditos", "getuser", "removecreditos"]
 const commandSources = [discordCreditosCommands, discordCommands, discordPerfilCommands, discordLojaCommands, discordJogosCommands ];
 
 async function main() {
