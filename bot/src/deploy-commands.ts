@@ -94,8 +94,8 @@ const commands = [
 			.setDescription('Valor da aposta')
 			.setRequired(true)
 		)
-		.addUserOption(option => option.setName('desafiante')
-			.setDescription('Desafiante')
+		.addUserOption(option => option.setName('oponente')
+			.setDescription('Oponente')
 			.setRequired(true)
 		),
 

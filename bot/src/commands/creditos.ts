@@ -52,7 +52,7 @@ discordCreditosCommands.set("removecreditos", async (currentUser: User,  interac
 		motivo = "Motivo: " + motivo;
 	}
 
-	await interaction.reply(`Removide AR\$${valor} de <@!${user.userid}> .\n` + motivo);
+	await interaction.reply(`Removido AR\$${valor} de <@!${user.userid}> .\n` + motivo);
 });
 
 export default discordCreditosCommands;

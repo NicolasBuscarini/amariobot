@@ -1,7 +1,26 @@
-import { CacheType, CommandInteraction, MessageEmbed } from "discord.js";
+import { CacheType, CommandInteraction, MessageActionRow, MessageButton, MessageEmbed, TextBasedChannel, User as DiscordUser} from "discord.js";
 import { User } from "../models/user.model";
 import { userService } from "../services/user.service";
 import blackjack from "discord-blackjack";
+const wait = require('node:timers/promises').setTimeout;
+
+interface Jokenpo { 
+    jogada1: null | string, 
+    jogada2: null | string , 
+    userApplicationStarter: User | null, 
+    userApplicationOpponent: User | null, 
+    userDiscordStarter: DiscordUser | null, 
+    userDiscordOpponent: DiscordUser | null, 
+    channel: TextBasedChannel | null
+}
+export const jokenpo : Jokenpo = { 
+    jogada1: null, 
+    jogada2: null, 
+    userApplicationStarter: null, 
+    userApplicationOpponent: null, 
+    userDiscordStarter: null, 
+    userDiscordOpponent: null, 
+    channel: null};
 
 const discordJogosCommands = new Map<string, any>();
 
@@ -161,7 +180,70 @@ discordJogosCommands.set("blackjack", async (currentUser: User, interaction: Com
 });
 
 discordJogosCommands.set("jokenpo", async (currentUser: User, interaction: CommandInteraction<CacheType>) => {
-    
+    const oponenteDiscordUser = interaction.options.getUser("oponente", true);
+    const oponenteApplicationUser = await userService.getOrCreateUserByUserId(oponenteDiscordUser.id);
+    const aposta = interaction.options.getNumber("aposta", true);
+    jokenpo.channel = interaction.channel;
+
+    jokenpo.userApplicationStarter = currentUser;
+    jokenpo.userApplicationOpponent = oponenteApplicationUser;
+
+    jokenpo.userDiscordStarter = interaction.user;
+    jokenpo.userDiscordOpponent = oponenteDiscordUser;
+
+    if (!await userService.gastarCreditos(currentUser, aposta)){
+        return interaction.reply({
+            content: 'Você não tem créditos suficientes', 
+            ephemeral: true
+        });
+    };
+
+    if (oponenteApplicationUser.credits < aposta) {
+        return interaction.reply({
+            content: `Oponente não tem saldo de créditos suficientes. Olhe o perfil dele com o /perfil <@!${oponenteDiscordUser.id}> para descobrir quanto ele tem.`, 
+            ephemeral: true
+        });
+    }
+
+    function jokenpoMsgPrivado (user: DiscordUser) {
+        const embedPrivado = new MessageEmbed()
+        .setTitle("Jokenpo")
+        .setDescription(`<@!${currentUser.userid}> está desafiando <@!${oponenteDiscordUser.id}> para uma partida de jokenpo valendo ${aposta.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`)
+        .setColor("BLUE")
+        .addFields(
+            { name: `\u200B` , value: `Uma mensagem foi enviada para cada um no privado para escolher sua jogada` }, 
+        );
+
+        const row = new MessageActionRow()
+			.addComponents(
+                new MessageButton()
+					.setCustomId('pedra')
+					.setLabel('Pedra')
+					.setStyle('SECONDARY'),
+                new MessageButton()
+					.setCustomId('papel')
+					.setLabel('Papel')
+					.setStyle('PRIMARY'),
+				new MessageButton()
+					.setCustomId('tesoura')
+					.setLabel('Tesoura')
+					.setStyle('DANGER'),
+			);
+        user.send({embeds: [embedPrivado], components: [row]});
+        return ;
+    }
+
+    jokenpoMsgPrivado(oponenteDiscordUser);
+    jokenpoMsgPrivado(interaction.user);
+
+    const embedStart = new MessageEmbed()
+        .setTitle("Jokenpo")
+        .setDescription(`<@!${currentUser.userid}> está desafiando <@!${oponenteDiscordUser.id}> para uma partida de jokenpo valendo A${aposta}`)
+        .setColor("BLUE")
+        .addFields(
+            { name: `\u200B` , value: `Uma mensagem foi enviada para cada um no privado para escolher sua jogada` }, 
+        );
+    await interaction.reply({ embeds: [embedStart]});
 
 });
 
