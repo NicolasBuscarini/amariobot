@@ -89,8 +89,6 @@ buttonsCommands.set("papel", async (currentUser: User, interaction: ButtonIntera
         await interaction.reply("Você não pode mudar sua escolha");
     }
 
-    interaction.reply("Você escolheu papel!");
-
     let play = jokenpoPlay()
     jokenpoResult(play, interaction.user);  
 });
