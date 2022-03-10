@@ -2,7 +2,6 @@ import { ButtonInteraction, CacheType, CommandInteraction , User as DiscordUser}
 import { User } from "../models/user.model";
 import { userService } from "../services/user.service";
 import { jokenpo } from "./jogos";
-const { MessageEmbed } = require('discord.js');
 
 const buttonsCommands = new Map<string, any>();
 
@@ -21,14 +20,21 @@ function jokenpoPlay () {
 };
 
 function jokenpoResult(vencedor: User | null | undefined, discordUser: DiscordUser) {
-    if ( vencedor === undefined ) return discordUser.send("Aguarde o adversário jogar") 
-    else if (vencedor === null) jokenpo.channel!.send(`Empate`)
-    else jokenpo.channel!.send(`<@!${vencedor.userid}>`)
+    if ( vencedor === undefined ) return discordUser.send("Adversário ainda não jogou... Aguarde a resposta do seu oponente") 
+    else if (vencedor === null) {
+        userService.adicionaCreditos(jokenpo.userApplicationOpponent!, jokenpo.aposta);
+        userService.adicionaCreditos(jokenpo.userApplicationStarter!, jokenpo.aposta);
+        jokenpo.channel!.send(`Empate entre <@!${jokenpo.userApplicationStarter!.userid}> e <@!${jokenpo.userApplicationOpponent!.userid}>`)
+        jokenpo.ativo = false;
+    }
+    else {
+        userService.adicionaCreditos(vencedor, (jokenpo.aposta*2));
+        jokenpo.channel!.send(`Vencedor <@!${vencedor.userid}>`);
+        jokenpo.ativo = false;
+    }
 };
 
 buttonsCommands.set("pedra", async (currentUser: User, interaction: CommandInteraction<CacheType>) => {
-    interaction.user.send("Você escolheu pedra!");
-
     if (jokenpo.userApplicationStarter?.userid == currentUser.userid) {
         jokenpo.jogada1 = "pedra";
     } else if (jokenpo.userApplicationOpponent?.userid == currentUser.userid){
@@ -40,15 +46,10 @@ buttonsCommands.set("pedra", async (currentUser: User, interaction: CommandInter
 
     let play = jokenpoPlay()
     jokenpoResult(play, interaction.user);
-
-    return interaction.reply("certo");
-
 });
 
 
 buttonsCommands.set("papel", async (currentUser: User, interaction: ButtonInteraction<CacheType>) => {
-    interaction.user.send("Você escolheu papel!");
-
     if (jokenpo.userApplicationStarter?.userid == currentUser.userid) {
         jokenpo.jogada1 = "papel";
     } else if (jokenpo.userApplicationOpponent?.userid == currentUser.userid){
@@ -58,18 +59,17 @@ buttonsCommands.set("papel", async (currentUser: User, interaction: ButtonIntera
         return interaction.user.send("algo deu errado");
     }
 
+    interaction.reply("Você escolheu papel!");
+
     let play = jokenpoPlay()
     jokenpoResult(play, interaction.user);  
-
-    return interaction.reply("certo");
-
 });
 
 buttonsCommands.set("tesoura", async (currentUser: User, interaction: ButtonInteraction<CacheType>) => {
-    interaction.user.send("Você escolheu tesoura!");
-
     if (jokenpo.userApplicationStarter?.userid == currentUser.userid) {
         jokenpo.jogada1 = "tesoura";
+        interaction.reply(`Você escolheu papel na partida contra o <!@${jokenpo}>!`);
+
     } else if (jokenpo.userApplicationOpponent?.userid == currentUser.userid){
         jokenpo.jogada2 = "tesoura";
     } else {
@@ -79,8 +79,6 @@ buttonsCommands.set("tesoura", async (currentUser: User, interaction: ButtonInte
 
     let play = jokenpoPlay()
     jokenpoResult(play, interaction.user);
-
-    return interaction.reply("certo");
 });
 
 export default buttonsCommands;

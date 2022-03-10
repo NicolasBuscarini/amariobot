@@ -2,25 +2,29 @@ import { CacheType, CommandInteraction, MessageActionRow, MessageButton, Message
 import { User } from "../models/user.model";
 import { userService } from "../services/user.service";
 import blackjack from "discord-blackjack";
-const wait = require('node:timers/promises').setTimeout;
 
 interface Jokenpo { 
+    ativo: boolean
     jogada1: null | string, 
     jogada2: null | string , 
     userApplicationStarter: User | null, 
     userApplicationOpponent: User | null, 
     userDiscordStarter: DiscordUser | null, 
     userDiscordOpponent: DiscordUser | null, 
-    channel: TextBasedChannel | null
+    channel: TextBasedChannel | null,
+    aposta: number
 }
-export const jokenpo : Jokenpo = { 
+export let jokenpo : Jokenpo = { 
+    ativo: false,
     jogada1: null, 
     jogada2: null, 
     userApplicationStarter: null, 
     userApplicationOpponent: null, 
     userDiscordStarter: null, 
     userDiscordOpponent: null, 
-    channel: null};
+    channel: null,
+    aposta: 0
+};
 
 const discordJogosCommands = new Map<string, any>();
 
@@ -180,16 +184,24 @@ discordJogosCommands.set("blackjack", async (currentUser: User, interaction: Com
 });
 
 discordJogosCommands.set("jokenpo", async (currentUser: User, interaction: CommandInteraction<CacheType>) => {
+    if (jokenpo.ativo) {
+        return interaction.reply({
+            content: `Bot já está sendo arbitro em outra partida de jokenpo. Tente novamente mais tarde. \n(Uma partida tem duração máxima de 1 minuto)`, 
+            ephemeral: true
+        });
+    }
+    jokenpo.ativo = true;
+
     const oponenteDiscordUser = interaction.options.getUser("oponente", true);
     const oponenteApplicationUser = await userService.getOrCreateUserByUserId(oponenteDiscordUser.id);
     const aposta = interaction.options.getNumber("aposta", true);
+    
     jokenpo.channel = interaction.channel;
-
     jokenpo.userApplicationStarter = currentUser;
     jokenpo.userApplicationOpponent = oponenteApplicationUser;
-
     jokenpo.userDiscordStarter = interaction.user;
     jokenpo.userDiscordOpponent = oponenteDiscordUser;
+    jokenpo.aposta = aposta;
 
     if (!await userService.gastarCreditos(currentUser, aposta)){
         return interaction.reply({
@@ -205,7 +217,7 @@ discordJogosCommands.set("jokenpo", async (currentUser: User, interaction: Comma
         });
     }
 
-    function jokenpoMsgPrivado (user: DiscordUser) {
+    async function jokenpoMsgPrivado (user: DiscordUser) {
         const embedPrivado = new MessageEmbed()
         .setTitle("Jokenpo")
         .setDescription(`<@!${currentUser.userid}> está desafiando <@!${oponenteDiscordUser.id}> para uma partida de jokenpo valendo ${aposta.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`)
@@ -229,7 +241,24 @@ discordJogosCommands.set("jokenpo", async (currentUser: User, interaction: Comma
 					.setLabel('Tesoura')
 					.setStyle('DANGER'),
 			);
-        user.send({embeds: [embedPrivado], components: [row]});
+            
+        let message = await user.send({embeds: [embedPrivado], components: [row]});
+
+        setTimeout(() => {
+            jokenpo = { 
+                ativo: false,
+                jogada1: null, 
+                jogada2: null, 
+                userApplicationStarter: null, 
+                userApplicationOpponent: null, 
+                userDiscordStarter: null, 
+                userDiscordOpponent: null, 
+                channel: null,
+                aposta: 0
+            };
+            message.delete();
+        }, 60000)
+
         return ;
     }
 
@@ -238,12 +267,13 @@ discordJogosCommands.set("jokenpo", async (currentUser: User, interaction: Comma
 
     const embedStart = new MessageEmbed()
         .setTitle("Jokenpo")
-        .setDescription(`<@!${currentUser.userid}> está desafiando <@!${oponenteDiscordUser.id}> para uma partida de jokenpo valendo A${aposta}`)
+        .setDescription(`<@!${currentUser.userid}> está desafiando <@!${oponenteDiscordUser.id}> para uma partida de jokenpo valendo A${aposta.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}}`)
         .setColor("BLUE")
         .addFields(
             { name: `\u200B` , value: `Uma mensagem foi enviada para cada um no privado para escolher sua jogada` }, 
         );
     await interaction.reply({ embeds: [embedStart]});
+
 
 });
 
