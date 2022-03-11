@@ -5,6 +5,7 @@ import blackjack from "discord-blackjack";
 
 interface Jokenpo { 
     ativo: boolean
+    finished: boolean
     jogada1: null | string, 
     jogada2: null | string , 
     userApplicationStarter: User | null, 
@@ -16,6 +17,7 @@ interface Jokenpo {
 };
 export let jokenpo : Jokenpo = { 
     ativo: false,
+    finished: false,
     jogada1: null, 
     jogada2: null, 
     userApplicationStarter: null, 
@@ -203,9 +205,38 @@ discordJogosCommands.set("jokenpo", async (currentUser: User, interaction: Comma
     jokenpo.userDiscordOpponent = oponenteDiscordUser;
     jokenpo.aposta = aposta;
 
+    if ( jokenpo.userApplicationStarter == jokenpo.userApplicationOpponent ) {
+        jokenpo = { 
+            ativo: false,
+            finished: false,
+            jogada1: null, 
+            jogada2: null, 
+            userApplicationStarter: null, 
+            userApplicationOpponent: null, 
+            userDiscordStarter: null, 
+            userDiscordOpponent: null, 
+            channel: null,
+            aposta: 0
+        };
+        return interaction.reply({
+            content: 'Não pode desafiar você mesmo.', 
+            ephemeral: true
+        });
+    }
 
     if (currentUser.credits < aposta) {
-        jokenpo.ativo = false;
+        jokenpo = { 
+            ativo: false,
+            finished: false,
+            jogada1: null, 
+            jogada2: null, 
+            userApplicationStarter: null, 
+            userApplicationOpponent: null, 
+            userDiscordStarter: null, 
+            userDiscordOpponent: null, 
+            channel: null,
+            aposta: 0
+        };
         return interaction.reply({
             content: 'Você não tem créditos suficientes', 
             ephemeral: true
@@ -213,7 +244,18 @@ discordJogosCommands.set("jokenpo", async (currentUser: User, interaction: Comma
     }
 
     if (oponenteApplicationUser.credits < aposta) {
-        jokenpo.ativo = false;
+        jokenpo = { 
+            ativo: false,
+            finished: false,
+            jogada1: null, 
+            jogada2: null, 
+            userApplicationStarter: null, 
+            userApplicationOpponent: null, 
+            userDiscordStarter: null, 
+            userDiscordOpponent: null, 
+            channel: null,
+            aposta: 0
+        };
         return interaction.reply({
             content: `Oponente não tem saldo de créditos suficientes. Olhe o perfil dele com o /perfil <@!${oponenteDiscordUser.id}> para descobrir quanto ele tem.`, 
             ephemeral: true
@@ -254,6 +296,7 @@ discordJogosCommands.set("jokenpo", async (currentUser: User, interaction: Comma
         setTimeout(() => {
             jokenpo = { 
                 ativo: false,
+                finished: false,
                 jogada1: null, 
                 jogada2: null, 
                 userApplicationStarter: null, 

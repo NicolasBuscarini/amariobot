@@ -1,6 +1,6 @@
 import { User } from "../models/user.model";
 import { mongoDbContext as ctx } from "../context/mongo-db.context";
-import { EntityRepository } from "@mikro-orm/core";
+import { EntityRepository, QueryOrder } from "@mikro-orm/core";
 import { MongoEntityRepository } from "@mikro-orm/mongodb";
 import { TextBasedChannel } from "discord.js";
 
@@ -93,6 +93,20 @@ class UserService {
 			}
 		}
 		await userRepository.persistAndFlush(user);
+	}
+
+	async listRank(orderBy: string) {
+		const userRepository = await this.userRepository();
+
+		const orderList = [{}];
+		orderList[0][orderBy] = QueryOrder.DESC;
+
+		let users = await userRepository.findAll({
+			orderBy: orderList
+		});
+		
+		var ranks = users.map(function(v){ return users.indexOf(v)+1 });
+		console.log(ranks);
 	}
 }
 

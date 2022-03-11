@@ -23,6 +23,9 @@ async function jokenpoResult(vencedor: User | null | undefined, discordUser: Dis
     if ( vencedor === undefined ) return discordUser.send("Adversário ainda não jogou... Aguarde a resposta do seu oponente") 
     else if (vencedor === null) {
         jokenpo.channel!.send(`Empate entre <@!${jokenpo.userApplicationStarter!.userid}> e <@!${jokenpo.userApplicationOpponent!.userid}>`)
+        jokenpo.userDiscordStarter?.send(`Empate!`);
+        jokenpo.userDiscordOpponent?.send(`Empate!`);
+        jokenpo.finished = true
         jokenpo.ativo = false;
     }
     else {
@@ -34,19 +37,17 @@ async function jokenpoResult(vencedor: User | null | undefined, discordUser: Dis
         await userService.ganharExp(jokenpo.userApplicationOpponent!, (jokenpo.aposta * 1/10), jokenpo.channel!)  
         await userService.ganharExp(vencedor, (jokenpo.aposta * 4/10), jokenpo.channel!)   
         
-        jokenpo.userDiscordStarter?.send(`Vencedor do jokenpo: ${vencedor.userid}`);
-        jokenpo.userDiscordOpponent?.send(`Vencedor do jokenpo: ${vencedor.userid}`);
+        jokenpo.userDiscordStarter?.send(`Vencedor do jokenpo: <@!${vencedor.userid}>`);
+        jokenpo.userDiscordOpponent?.send(`Vencedor do jokenpo: <@!${vencedor.userid}>`);
 
 
         const jokenpoEmbedWin = new MessageEmbed()
+            .setDescription("Resultado:")
             .addFields(
-                {name: `Resultado`, value: '\u200B', inline : false },
-                {name: `\u200B`, value: `Desafiante <@!${jokenpo.userApplicationStarter?.userid}>:`, inline : false },
-                {name: `\u200B`, value: `Desafiado <@!${jokenpo.userApplicationStarter?.userid}>:`, inline: true },
-                {name: `${jokenpo.jogada1}`, value: `\u200B`, inline : false },
-                {name: `${jokenpo.jogada2}`, value: `\u200B`, inline : true },
+                {name: `\u200B`, value: `Desafiante <@!${jokenpo.userApplicationStarter?.userid}>: `+ "`" +` *${jokenpo.jogada1}*`+ "`", inline : false },
+                {name: `\u200B`, value: `Desafiado <@!${jokenpo.userApplicationOpponent?.userid}>: `+ "`" +` *${jokenpo.jogada2}*`+ "`", inline: false },
 
-                {name: `*VENCEDOR:*`, value: `<@!${vencedor.userid}>`},
+                {name: `*VENCEDOR: *`, value: `<@!${vencedor.userid}>`},
                 {name: "Aposta:", value: `A${jokenpo.aposta.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`},
 
             )
@@ -57,6 +58,7 @@ async function jokenpoResult(vencedor: User | null | undefined, discordUser: Dis
             .setFooter(`Jokenpo`);
         
         jokenpo.channel!.send({embeds: [jokenpoEmbedWin]});
+        jokenpo.finished = true
         jokenpo.ativo = false;
     }
 };
@@ -71,8 +73,12 @@ buttonsCommands.set("pedra", async (currentUser: User, interaction: CommandInter
         await interaction.reply("Você não pode mudar sua escolha");
     }
 
+    if (jokenpo.finished) {
+        return
+    }
     let play = jokenpoPlay()
     jokenpoResult(play, interaction.user);
+    
 });
 
 
@@ -89,6 +95,9 @@ buttonsCommands.set("papel", async (currentUser: User, interaction: ButtonIntera
         await interaction.reply("Você não pode mudar sua escolha");
     }
 
+    if (jokenpo.finished) {
+        return
+    }
     let play = jokenpoPlay()
     jokenpoResult(play, interaction.user);  
 });
@@ -105,6 +114,9 @@ buttonsCommands.set("tesoura", async (currentUser: User, interaction: ButtonInte
         await interaction.reply("Você não pode mudar sua escolha");
     }
 
+    if (jokenpo.finished) {
+        return
+    }
     let play = jokenpoPlay()
     jokenpoResult(play, interaction.user);
 });
