@@ -20,28 +20,30 @@ discordCommands.set("ranking", async (currentUser: User, interaction: CommandInt
 		.setURL('https://discord.js.org/')
 		.setTitle(`Ranking`)
 		.addFields(
-		)
+		);
+	
+	let selectMenu = new MessageSelectMenu()
+	.setCustomId('select')
+	.setPlaceholder('Selecione um ranking')
+	.addOptions([
+		{
+			label: 'exp',
+			description: 'ranquear por experiencia',
+			value: 'exp',
+		},
+		{
+			label: 'creditos',
+			description: 'ranquear por créditos',
+			value: 'creditos',
+		},
+	]);
 
-	const menu = new MessageActionRow()
+	const row = new MessageActionRow()
 	.addComponents(
-		new MessageSelectMenu()
-			.setCustomId('select')
-			.setPlaceholder('Selecione um ranking')
-			.addOptions([
-				{
-					label: 'exp',
-					description: 'This is a description',
-					value: 'first_option',
-				},
-				{
-					label: 'creditos',
-					description: 'This is also a description',
-					value: 'second_option',
-				},
-			]),
+		selectMenu,
 	);
 	
-	await interaction.reply({ embeds: [embed], components: [menu]});
+	await interaction.reply({ embeds: [embed], components: [row]});
 
 	userService.listRank("exp");
 	
@@ -73,9 +75,9 @@ discordCommands.set("daily" , async (currentUser: User, interaction: CommandInte
 		}
 	};
 	
-	await userService.adicionaCreditos(currentUser, 40);
+	await userService.adicionaCreditos(currentUser, 1212);
 	await userService.updateUser(currentUser, {daily: Date.now()});
-	return interaction.reply("Parabéns, otário! você ganhou AR$40,00 por logar hoje.")
+	return interaction.reply("Parabéns, otário! você ganhou AR$1.212,00 por logar hoje.")
 });
 
 export default discordCommands;

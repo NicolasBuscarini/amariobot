@@ -5,6 +5,7 @@ import discordCommands from './commands/index';
 import discordJogosCommands from './commands/jogos';
 import discordLojaCommands from './commands/loja';
 import discordPerfilCommands from './commands/perfil';
+import selectMenuCommands from './commands/selectmenu';
 import { AppConfig } from './configs/environment';
 import { mongoDbContext } from './context/mongo-db.context';
 import { userService } from './services/user.service';
@@ -28,6 +29,22 @@ async function main() {
     if (interaction.isButton()) {
       console.log(interaction.customId);
       buttonsCommands.forEach(async (action: (...i: any[]) => Promise<void>, commandName: String) => {
+        if (commandName === interaction.customId) {
+          try{
+            await action(user, interaction);
+            return;
+          } catch (e) { 
+            console.error(e)
+            await interaction.reply({content: "Algo deu errado ao executar esse comando. Por favor reporte ao <@!576116903051788288>", ephemeral: true})
+            return;
+          }
+        }
+      });
+    }
+
+    if (interaction.isSelectMenu()) {
+      console.log(interaction.customId);
+      selectMenuCommands.forEach(async (action: (...i: any[]) => Promise<void>, commandName: String) => {
         if (commandName === interaction.customId) {
           try{
             await action(user, interaction);

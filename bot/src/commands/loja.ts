@@ -7,12 +7,11 @@ import discordTTS from 'discord-tts';
 const discordLojaCommands = new Map<string, any>();
 let botSendoUsado: boolean = false;
 
-const precoKickar: number = 20;
-const precoApelido: number = 200;
-const precoMutar: number = 250;
-const precoDesmutar: number = 70;
-const precoCastigo: number = 30;
-
+const precoKickar: number = 700;
+const precoApelido: number = 2000;
+const precoMutar: number = 2500;
+const precoDesmutar: number = 1500;
+const precoCastigo: number = 1200;
 
 discordLojaCommands.set("loja", async (currentUser: User,  interaction: CommandInteraction<CacheType>)=> {
 	const exampleEmbed = new MessageEmbed()
